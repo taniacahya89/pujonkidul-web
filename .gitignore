@@ -1,7 +1,10 @@
 # Environment variables (jangan pernah di-commit!)
 .env
+.env.example
 backend/.env
+backend/.env.example
 frontend/.env
+frontend/.env.example
 
 # Go
 backend/tmp/
