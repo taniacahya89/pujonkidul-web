@@ -1,0 +1,20 @@
+# Environment variables (jangan pernah di-commit!)
+.env
+backend/.env
+frontend/.env
+
+# Go
+backend/tmp/
+backend/*.exe
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
