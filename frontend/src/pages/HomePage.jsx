@@ -11,32 +11,29 @@ function HomePage() {
 
   return (
     <div>
-      {/* ===== SECTION HERO ===== */}
-      <section className="relative bg-gradient-to-br from-green-700 via-green-600 to-emerald-500 text-white overflow-hidden">
-        {/* Dekorasi latar belakang */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-60 h-60 bg-yellow-300 rounded-full blur-3xl" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 py-20 sm:py-28">
+      {/* ===== SECTION HERO — warna solid brand.dark ===== */}
+      <section className="text-white overflow-hidden" style={{ backgroundColor: '#41431B' }}>
+        <div className="max-w-7xl mx-auto px-4 py-20 sm:py-28">
           <div className="max-w-2xl">
             {/* Badge lokasi */}
-            <span className="inline-block bg-white/20 text-white text-sm px-4 py-1.5 rounded-full mb-4">
+            <span
+              className="inline-block text-sm px-4 py-1.5 rounded-full mb-4"
+              style={{ backgroundColor: '#4C5C2D', color: '#AEB784' }}
+            >
               📍 Pujon Kidul, Malang, Jawa Timur
             </span>
 
             {/* Judul utama */}
-            <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-4">
+            <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-4" style={{ color: '#F8F3E1' }}>
               Jelajahi Keindahan
               <br />
-              <span className="text-yellow-300">Pujon Kidul</span>
+              <span style={{ color: '#AEB877' }}>Pujon Kidul</span>
             </h1>
 
             {/* Deskripsi singkat */}
-            <p className="text-white/80 text-lg mb-6 leading-relaxed">
+            <p className="text-lg mb-6 leading-relaxed" style={{ color: '#AEB784' }}>
               Temukan destinasi wisata alam, kuliner, dan budaya yang memukau di
-              kawasan Pujon Kidul. Dari cafe sawah hingga air terjun tersembunyi.
+              kawasan Pujon Kidul. Dari cafe sawah hingga taman bunga Eropa.
             </p>
 
             {/* Widget cuaca */}
@@ -44,10 +41,11 @@ function HomePage() {
               <WeatherWidget />
             </div>
 
-            {/* Tombol CTA */}
+            {/* Tombol CTA — brand.lime bg */}
             <button
               onClick={() => navigate('/budget')}
-              className="bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              className="font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              style={{ backgroundColor: '#AEB877', color: '#41431B' }}
             >
               🗺️ Rencanakan Wisata
             </button>
@@ -58,45 +56,41 @@ function HomePage() {
       {/* ===== SECTION DESTINASI UNGGULAN ===== */}
       <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-10">
-          <span className="text-green-600 font-semibold text-sm uppercase tracking-wide">
+          <span className="font-semibold text-sm uppercase tracking-wide" style={{ color: '#237227' }}>
             Pilihan Terbaik
           </span>
-          <h2 className="text-3xl font-bold text-gray-800 mt-1">
+          <h2 className="text-3xl font-bold mt-1" style={{ color: '#41431B' }}>
             Destinasi Unggulan
           </h2>
-          <p className="text-gray-500 mt-2">
+          <p className="mt-2" style={{ color: '#4C5C2D' }}>
             Tiga destinasi paling populer di kawasan Pujon Kidul
           </p>
         </div>
 
-        {/* Loading state */}
         {isLoading && <SkeletonLoader type="card" count={3} />}
 
-        {/* Error state */}
         {error && !isLoading && (
           <div className="text-center py-8">
             <p className="text-red-500">Gagal memuat destinasi unggulan.</p>
           </div>
         )}
 
-        {/* Grid destinasi unggulan */}
         {!isLoading && !error && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredDestinations.map((destination, index) => (
+            {featuredDestinations.map((destination) => (
               <DestinationCard
                 key={destination.id}
                 destination={destination}
-                colorIndex={index}
               />
             ))}
           </div>
         )}
 
-        {/* Tombol lihat semua */}
         <div className="text-center mt-10">
           <button
             onClick={() => navigate('/wisata')}
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-xl transition-colors"
+            className="font-semibold px-8 py-3 rounded-xl transition-colors"
+            style={{ backgroundColor: '#237227', color: '#F8F3E1' }}
           >
             Lihat Semua Destinasi →
           </button>
@@ -104,26 +98,27 @@ function HomePage() {
       </section>
 
       {/* ===== SECTION FITUR APLIKASI ===== */}
-      <section className="bg-green-50 py-16">
+      <section className="py-16" style={{ backgroundColor: '#E3DBBB' }}>
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-800 text-center mb-10">
+          <h2 className="text-2xl font-bold text-center mb-10" style={{ color: '#41431B' }}>
             Fitur Lengkap untuk Wisatawan
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { icon: '🗺️', title: 'Peta Interaktif', desc: 'Lihat lokasi semua destinasi', path: '/peta' },
               { icon: '💰', title: 'Kalkulator Budget', desc: 'Hitung estimasi biaya perjalanan', path: '/budget' },
-              { icon: '🛣️', title: 'Akses Jalan', desc: 'Cek kondisi jalan terkini', path: '/peta' },
-              { icon: '🌐', title: 'WebGIS', desc: 'Analisis spasial kawasan', path: '/webgis' },
+              { icon: '🛣️', title: 'Akses Jalan', desc: 'Cek kondisi lalu lintas terkini', path: '/akses-jalan' },
+              { icon: '🤖', title: 'Tanya Chatbot', desc: 'Info wisata via chat', path: null },
             ].map((feature) => (
               <button
                 key={feature.title}
-                onClick={() => navigate(feature.path)}
-                className="bg-white rounded-2xl p-5 text-center shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => feature.path ? navigate(feature.path) : document.getElementById('chatbot-btn')?.click()}
+                className="rounded-2xl p-5 text-center shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                style={{ backgroundColor: '#F8F3E1' }}
               >
                 <div className="text-3xl mb-2">{feature.icon}</div>
-                <h3 className="font-semibold text-gray-800 text-sm">{feature.title}</h3>
-                <p className="text-gray-500 text-xs mt-1">{feature.desc}</p>
+                <h3 className="font-semibold text-sm" style={{ color: '#41431B' }}>{feature.title}</h3>
+                <p className="text-xs mt-1" style={{ color: '#4C5C2D' }}>{feature.desc}</p>
               </button>
             ))}
           </div>

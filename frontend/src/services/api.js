@@ -1,10 +1,11 @@
 import axios from 'axios'
 
 // Buat instance Axios dengan base URL dari environment variable
-// VITE_API_BASE_URL dikonfigurasi di file .env frontend
+// Jika VITE_API_BASE_URL kosong, Axios pakai path relatif → Vite proxy akan forward ke backend
+// Jika diisi (misal http://localhost:8080), Axios langsung ke backend (bypass proxy)
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
-  timeout: 15000, // Timeout 15 detik
+  baseURL: import.meta.env.VITE_API_BASE_URL || '',
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },

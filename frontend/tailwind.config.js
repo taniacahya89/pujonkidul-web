@@ -6,35 +6,18 @@ export default {
   ],
   theme: {
     extend: {
-      // Warna tema wisata alam Pujon Kidul
+      // Design token palette Pujon Kidul Explore
+      // Sumber kebenaran tunggal untuk semua warna UI
       colors: {
-        primary: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
+        brand: {
+          dark:    '#41431B', // Olive gelap — teks utama, navbar bg
+          sage:    '#AEB784', // Sage muda — border, secondary bg
+          forest:  '#4C5C2D', // Hijau hutan — hover state
+          green:   '#237227', // Hijau utama — CTA, active
+          cream:   '#E3DBBB', // Krem — card bg, section bg
+          ivory:   '#F8F3E1', // Ivory — page background
+          lime:    '#AEB877', // Lime — badge, highlight
         },
-        accent: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24',
-          500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-        },
-        nature: {
-          brown: '#92400e',
-          sky: '#0ea5e9',
-          earth: '#78716c',
-        }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

@@ -41,11 +41,11 @@ func (r *budgetRepository) FindCityByID(id uint) (*model.City, error) {
 }
 
 // FindDestinationsByIDs mengambil destinasi berdasarkan slice ID
-// Hanya mengambil kolom yang dibutuhkan untuk kalkulasi (id, name, ticket_price)
+// Mengambil kolom yang dibutuhkan untuk kalkulasi termasuk harga weekday/weekend
 func (r *budgetRepository) FindDestinationsByIDs(ids []uint) ([]model.Destination, error) {
 	var destinations []model.Destination
 	result := r.db.
-		Select("id, name, ticket_price, best_time").
+		Select("id, name, ticket_price, ticket_weekday, ticket_weekend, best_time").
 		Where("id IN ?", ids).
 		Find(&destinations)
 	if result.Error != nil {

@@ -68,12 +68,12 @@ function InteractiveMap({ destinations, onMarkerClick }) {
       if (!destination.latitude || !destination.longitude) return
       if (destination.latitude === 0 && destination.longitude === 0) return
 
-      // Buat custom icon marker dengan div HTML
+      // Buat custom icon marker dengan div HTML — warna brand.green
       const customIcon = L.divIcon({
         className: '',
         html: `
           <div style="
-            background: #16a34a;
+            background: #237227;
             color: white;
             border-radius: 50% 50% 50% 0;
             width: 32px;
@@ -84,7 +84,7 @@ function InteractiveMap({ destinations, onMarkerClick }) {
             font-size: 14px;
             transform: rotate(-45deg);
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            border: 2px solid white;
+            border: 2px solid #F8F3E1;
           ">
             <span style="transform: rotate(45deg);">📍</span>
           </div>
@@ -94,14 +94,14 @@ function InteractiveMap({ destinations, onMarkerClick }) {
         popupAnchor: [0, -32],
       })
 
-      // Buat marker dan tambahkan ke peta
+      // Buat marker — TANPA popup Leaflet, detail tampil di side panel
       const marker = L.marker([destination.latitude, destination.longitude], {
         icon: customIcon,
         title: destination.name,
       })
         .addTo(mapInstanceRef.current)
         .on('click', () => {
-          // Panggil callback dengan data destinasi yang diklik
+          // Panggil callback — side panel akan menampilkan detail
           if (onMarkerClick) onMarkerClick(destination)
         })
 

@@ -52,13 +52,39 @@ func (s *destinationService) GetByID(id uint) (*model.Destination, error) {
 	return destination, nil
 }
 
-// GetFeatured mengambil 3 destinasi unggulan
+// GetFeatured mengambil 3 destinasi unggulan berdasarkan urutan prioritas nama
+// Urutan: Florawisata Santerra De Laponte, Bobocabin Coban Rondo, Coban Rondo
+// Tidak menggunakan is_featured flag agar urutan tetap deterministik
 func (s *destinationService) GetFeatured() ([]model.Destination, error) {
-	destinations, err := s.repo.FindFeatured()
+	// Ambil semua destinasi terlebih dahulu
+	all, err := s.repo.FindAll()
 	if err != nil {
 		return nil, err
 	}
-	return destinations, nil
+
+	// Urutan prioritas beranda — hard constraint, tidak berubah
+	// Bukit Nirwana, Cafe Sawah, Florawisata Santerra De Laponte
+	priorityNames := []string{
+		"Bukit Nirwana",
+		"Cafe Sawah",
+		"Florawisata Santerra De Laponte",
+	}
+
+	// Buat map nama → destinasi untuk lookup O(1)
+	byName := make(map[string]model.Destination, len(all))
+	for _, d := range all {
+		byName[d.Name] = d
+	}
+
+	// Susun hasil sesuai urutan prioritas
+	result := make([]model.Destination, 0, 3)
+	for _, name := range priorityNames {
+		if d, ok := byName[name]; ok {
+			result = append(result, d)
+		}
+	}
+
+	return result, nil
 }
 
 // validateCoordinates memvalidasi bahwa koordinat latitude dan longitude valid

@@ -40,10 +40,10 @@ function BudgetPage() {
     <div className="max-w-7xl mx-auto px-4 py-10">
       {/* Header halaman */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+        <h1 className="text-3xl font-bold mb-2" style={{ color: '#41431B' }}>
           💰 Kalkulator Budget Perjalanan
         </h1>
-        <p className="text-gray-500">
+        <p style={{ color: '#4C5C2D' }}>
           Hitung estimasi biaya perjalanan ke Pujon Kidul berdasarkan kota asal dan preferensi Anda
         </p>
       </div>

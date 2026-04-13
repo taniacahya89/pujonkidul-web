@@ -6,7 +6,6 @@ import SkeletonLoader from '../../components/SkeletonLoader'
 function WeatherWidget() {
   const { weather, isLoading, error } = useWeather()
 
-  // Tampilkan skeleton saat loading
   if (isLoading) {
     return <SkeletonLoader type="weather" />
   }
@@ -14,29 +13,28 @@ function WeatherWidget() {
   // Tampilkan pesan error tanpa mengganggu konten lain
   if (error || !weather) {
     return (
-      <p className="text-white/70 text-sm italic">
+      <p className="text-sm italic" style={{ color: '#AEB784' }}>
         ☁️ Data cuaca tidak tersedia saat ini
       </p>
     )
   }
 
   return (
-    <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 w-fit">
-      {/* Ikon cuaca dari OpenWeatherMap */}
+    <div
+      className="flex items-center gap-3 rounded-xl px-4 py-3 w-fit"
+      style={{ backgroundColor: 'rgba(76, 92, 45, 0.6)' }}
+    >
       <img
         src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
         alt={weather.condition}
         className="w-12 h-12"
       />
       <div>
-        {/* Suhu */}
-        <p className="text-white font-bold text-2xl leading-none">
+        <p className="font-bold text-2xl leading-none" style={{ color: '#F8F3E1' }}>
           {Math.round(weather.temp)}°C
         </p>
-        {/* Deskripsi cuaca */}
-        <p className="text-white/80 text-sm capitalize">{weather.description}</p>
-        {/* Kelembaban dan angin */}
-        <p className="text-white/60 text-xs mt-0.5">
+        <p className="text-sm capitalize" style={{ color: '#AEB784' }}>{weather.description}</p>
+        <p className="text-xs mt-0.5" style={{ color: '#AEB877' }}>
           💧 {weather.humidity}% · 💨 {weather.wind_speed} m/s
         </p>
       </div>

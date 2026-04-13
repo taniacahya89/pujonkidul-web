@@ -77,6 +77,9 @@ func getValidationMessage(e validator.FieldError) string {
 		if e.Field() == "VehicleType" {
 			return "Jenis kendaraan harus 'motor' atau 'mobil'"
 		}
+		if e.Field() == "DayType" {
+			return "Hari kunjungan harus 'weekday' atau 'weekend'"
+		}
 		if e.Field() == "MealBudget" {
 			return "Anggaran makan harus 25000, 50000, atau 100000"
 		}

@@ -1,24 +1,25 @@
 import { NavLink } from 'react-router-dom'
 
-// Daftar item navigasi utama
+// 5 item navigasi — WebGIS dihapus
 const navItems = [
-  { path: '/', label: 'Beranda' },
-  { path: '/wisata', label: 'Wisata' },
-  { path: '/peta', label: 'Peta' },
-  { path: '/budget', label: 'Budget' },
-  { path: '/webgis', label: 'WebGIS' },
+  { path: '/',            label: 'Beranda' },
+  { path: '/wisata',      label: 'Wisata' },
+  { path: '/peta',        label: 'Peta' },
+  { path: '/budget',      label: 'Budget' },
+  { path: '/akses-jalan', label: 'Akses Jalan' },
 ]
 
 // Komponen navigasi utama dengan active state berdasarkan route saat ini
+// Menggunakan palette brand: dark=#41431B, green=#237227, cream=#E3DBBB
 function Navbar() {
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="sticky top-0 z-50 shadow-md" style={{ backgroundColor: '#41431B' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo dan nama aplikasi */}
           <NavLink to="/" className="flex items-center gap-2">
             <span className="text-2xl">🌿</span>
-            <span className="font-bold text-green-700 text-lg">
+            <span className="font-bold text-lg" style={{ color: '#E3DBBB' }}>
               Pujon Kidul Explore
             </span>
           </NavLink>
@@ -30,42 +31,49 @@ function Navbar() {
                 key={item.path}
                 to={item.path}
                 end={item.path === '/'}
-                className={({ isActive }) =>
-                  `px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                    isActive
-                      ? 'bg-green-100 text-green-700'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                  }`
-                }
+                style={({ isActive }) => ({
+                  padding: '6px 14px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  transition: 'background-color 0.15s',
+                  backgroundColor: isActive ? '#237227' : 'transparent',
+                  color: isActive ? '#F8F3E1' : '#AEB784',
+                  textDecoration: 'none',
+                })}
               >
                 {item.label}
               </NavLink>
             ))}
           </div>
 
-          {/* Tombol CTA di navbar */}
+          {/* Tombol CTA */}
           <NavLink
             to="/budget"
-            className="hidden md:block bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+            className="hidden md:block text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+            style={{ backgroundColor: '#237227', color: '#F8F3E1' }}
           >
             Rencanakan Wisata
           </NavLink>
         </div>
 
-        {/* Navigasi mobile */}
+        {/* Navigasi mobile — scroll horizontal */}
         <div className="md:hidden flex gap-1 pb-3 overflow-x-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               end={item.path === '/'}
-              className={({ isActive }) =>
-                `px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
-                  isActive
-                    ? 'bg-green-100 text-green-700'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`
-              }
+              style={({ isActive }) => ({
+                padding: '4px 12px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                fontWeight: '500',
+                whiteSpace: 'nowrap',
+                backgroundColor: isActive ? '#237227' : 'transparent',
+                color: isActive ? '#F8F3E1' : '#AEB784',
+                textDecoration: 'none',
+              })}
             >
               {item.label}
             </NavLink>

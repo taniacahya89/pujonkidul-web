@@ -1,12 +1,10 @@
 import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
 import { useDestinations } from '../hooks/useDestinations'
 import DestinationCard from '../features/destination/DestinationCard'
 import SkeletonLoader from '../components/SkeletonLoader'
 
 // Halaman semua destinasi wisata dengan pencarian real-time
 function WisataPage() {
-  const location = useLocation()
   const {
     filteredDestinations,
     isLoading,
@@ -15,9 +13,6 @@ function WisataPage() {
     setSearchQuery,
     refetch,
   } = useDestinations()
-
-  // Baca state dari navigasi (dari halaman peta untuk expand card tertentu)
-  const expandedId = location.state?.expandedId
 
   // Reset search saat halaman dimuat
   useEffect(() => {
@@ -28,28 +23,35 @@ function WisataPage() {
     <div className="max-w-7xl mx-auto px-4 py-10">
       {/* Header halaman */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+        <h1 className="text-3xl font-bold mb-2" style={{ color: '#41431B' }}>
           🏞️ Destinasi Wisata
         </h1>
-        <p className="text-gray-500">
+        <p style={{ color: '#4C5C2D' }}>
           Jelajahi semua destinasi wisata di kawasan Pujon Kidul, Malang
         </p>
       </div>
 
       {/* Search bar pencarian real-time */}
       <div className="relative mb-8">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+        <span className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: '#AEB784' }}>🔍</span>
         <input
           type="text"
           placeholder="Cari destinasi wisata..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 bg-white shadow-sm"
+          className="w-full pl-11 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 shadow-sm"
+          style={{
+            border: '1px solid #AEB784',
+            backgroundColor: '#fff',
+            color: '#41431B',
+            focusRingColor: '#237227',
+          }}
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-4 top-1/2 -translate-y-1/2"
+            style={{ color: '#AEB784' }}
           >
             ✕
           </button>
@@ -65,7 +67,8 @@ function WisataPage() {
           <p className="text-red-500 mb-4">Gagal memuat data destinasi.</p>
           <button
             onClick={refetch}
-            className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+            className="px-6 py-2 rounded-lg text-white"
+            style={{ backgroundColor: '#237227' }}
           >
             Coba Lagi
           </button>
@@ -93,13 +96,10 @@ function WisataPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredDestinations.map((destination, index) => (
+              {filteredDestinations.map((destination) => (
                 <DestinationCard
                   key={destination.id}
                   destination={destination}
-                  colorIndex={index}
-                  // Expand card jika navigasi dari peta dengan expandedId
-                  defaultExpanded={destination.id === expandedId}
                 />
               ))}
             </div>

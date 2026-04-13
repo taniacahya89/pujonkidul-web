@@ -7,21 +7,29 @@ import (
 
 // Destination merepresentasikan destinasi wisata di kawasan Pujon Kidul
 type Destination struct {
-	ID               uint      `json:"id" gorm:"primaryKey;autoIncrement"`
-	Name             string    `json:"name" gorm:"not null"`
-	ShortDescription string    `json:"short_description" gorm:"not null"`
-	FullDescription  string    `json:"full_description" gorm:"not null"`
-	OpeningHours     string    `json:"opening_hours" gorm:"not null"`
-	TicketPrice      int       `json:"ticket_price" gorm:"default:0"`
-	Latitude         float64   `json:"latitude" gorm:"not null"`
-	Longitude        float64   `json:"longitude" gorm:"not null"`
-	BestTime         string    `json:"best_time"`
-	ParkingAvailable bool      `json:"parking_available" gorm:"default:true"`
-	VehicleAccess    string    `json:"vehicle_access"`
-	IsFeatured       bool      `json:"is_featured" gorm:"default:false"`
-	Rating           float64   `json:"rating" gorm:"default:4.5"`
-	CreatedAt        time.Time `json:"created_at"`
-	UpdatedAt        time.Time `json:"updated_at"`
+	ID               uint    `json:"id" gorm:"primaryKey;autoIncrement"`
+	Name             string  `json:"name" gorm:"not null"`
+	ShortDescription string  `json:"short_description" gorm:"not null"`
+	FullDescription  string  `json:"full_description" gorm:"not null"`
+	OpeningHours     string  `json:"opening_hours" gorm:"not null"`
+	TicketPrice      int     `json:"ticket_price" gorm:"default:0"`
+	Latitude         float64 `json:"latitude" gorm:"not null"`
+	Longitude        float64 `json:"longitude" gorm:"not null"`
+	BestTime         string  `json:"best_time"`
+	ParkingAvailable bool    `json:"parking_available" gorm:"default:true"`
+	VehicleAccess    string  `json:"vehicle_access"`
+	IsFeatured       bool    `json:"is_featured" gorm:"default:false"`
+	Rating           float64 `json:"rating" gorm:"default:4.5"`
+	// Alamat lengkap destinasi
+	Address string `json:"address"`
+	// Informasi tarif parkir
+	ParkingInfo string `json:"parking_info"`
+	// Harga tiket weekday (Senin–Jumat) — 0 berarti sama dengan ticket_price
+	TicketWeekday int `json:"ticket_weekday" gorm:"default:0"`
+	// Harga tiket weekend (Sabtu–Minggu) — 0 berarti sama dengan ticket_price
+	TicketWeekend int       `json:"ticket_weekend" gorm:"default:0"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 
 	// Relasi ke tabel lain (dimuat via GORM Preload)
 	Detail   *DestinationDetail `json:"detail,omitempty" gorm:"foreignKey:DestinationID"`

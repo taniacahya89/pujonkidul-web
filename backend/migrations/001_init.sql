@@ -23,6 +23,8 @@ CREATE TABLE destinations (
     vehicle_access    VARCHAR(255),
     is_featured       BOOLEAN NOT NULL DEFAULT FALSE,
     rating            DECIMAL(3, 1) DEFAULT 4.5,
+    address           VARCHAR(500),
+    parking_info      VARCHAR(500),
     created_at        TIMESTAMPTZ DEFAULT NOW(),
     updated_at        TIMESTAMPTZ DEFAULT NOW()
 );
@@ -87,233 +89,175 @@ CREATE INDEX idx_travel_packages_dest_id     ON travel_packages(destination_id);
 CREATE INDEX idx_cities_province_id          ON cities(province_id);
 
 -- ============================================================
--- Seed: 10 Destinasi Wisata Pujon Kidul
+-- Seed: 6 Destinasi Wisata Pujon Kidul (single source of truth)
+-- Urutan: Cafe Sawah, Coban Rondo, Bukit Nirwana,
+--         Bobocabin Coban Rondo, Kelinci Park, Florawisata Santerra De Laponte
+-- is_featured = TRUE untuk: Florawisata (id=6), Bobocabin (id=4), Coban Rondo (id=2)
 -- ============================================================
 
-INSERT INTO destinations (name, short_description, full_description, opening_hours, ticket_price, latitude, longitude, best_time, parking_available, vehicle_access, is_featured, rating) VALUES
+INSERT INTO destinations (name, short_description, full_description, opening_hours, ticket_price, latitude, longitude, best_time, parking_available, vehicle_access, is_featured, rating, address, parking_info) VALUES
 
+-- 1. Cafe Sawah
 ('Cafe Sawah',
- 'Kafe unik di tengah hamparan sawah hijau dengan pemandangan pegunungan yang memukau.',
- 'Cafe Sawah Pujon Kidul adalah destinasi wisata kuliner yang menawarkan pengalaman makan di tengah sawah yang hijau. Pengunjung dapat menikmati berbagai menu makanan dan minuman sambil menikmati pemandangan alam pegunungan Malang yang indah. Tersedia berbagai spot foto instagramable di area persawahan.',
- '07:00 - 21:00', 10000, -7.92850000, 112.40120000,
- 'Pagi hari (07:00-10:00) atau sore hari (15:00-18:00)',
- TRUE, 'Motor, Mobil', TRUE, 4.7),
+ 'Kafe unik di tengah hamparan sawah hijau dengan pemandangan pegunungan Pujon yang memukau.',
+ 'Cafe Sawah Pujon Kidul adalah destinasi wisata kuliner ikonik yang menawarkan pengalaman makan di tengah sawah yang hijau. Pengunjung dapat menikmati berbagai menu makanan dan minuman tradisional sambil menikmati pemandangan alam pegunungan Malang yang indah. Tersedia berbagai spot foto instagramable di area persawahan yang luas.',
+ '08:00 - 18:00', 10000, -7.93120000, 112.39870000,
+ 'Pagi hari (08:00-10:00) atau sore hari (15:00-17:00)',
+ TRUE, 'Motor, Mobil', FALSE, 4.7,
+ 'Kawasan Cafe Sawah, Desa Wisata, Krajan, Pujon Kidul',
+ 'Parkir Motor: Rp 5.000 | Parkir Mobil: Rp 10.000'),
 
-('Wisata Petik Sayur',
- 'Pengalaman seru memetik sayuran segar langsung dari kebun organik Pujon Kidul.',
- 'Wisata Petik Sayur menawarkan pengalaman agrowisata yang edukatif. Pengunjung dapat langsung memetik berbagai jenis sayuran segar seperti tomat, cabai, wortel, dan selada dari kebun organik yang dikelola warga setempat. Cocok untuk keluarga dan edukasi anak-anak tentang pertanian.',
- '08:00 - 16:00', 15000, -7.93010000, 112.39980000,
- 'Pagi hari (08:00-11:00)',
- TRUE, 'Motor, Mobil', TRUE, 4.5),
+-- 2. Coban Rondo
+('Coban Rondo',
+ 'Air terjun legendaris dengan ketinggian 84 meter dikelilingi hutan pinus yang sejuk dan asri.',
+ 'Coban Rondo adalah air terjun ikonik di kawasan Pujon dengan ketinggian sekitar 84 meter. Dikelilingi hutan pinus yang lebat dan udara sejuk pegunungan, destinasi ini menjadi favorit wisatawan dari berbagai daerah. Tersedia area piknik, flying fox, dan berbagai wahana seru di sekitar kawasan air terjun.',
+ '08:00 - 17:00', 35000, -7.87520000, 112.52180000,
+ 'Pagi hari (08:00-11:00) untuk menghindari keramaian',
+ TRUE, 'Motor, Mobil, Bus', TRUE, 4.8,
+ 'Jl. Coban Rondo No.30, Pandesari, Pujon, Malang',
+ 'Parkir Motor: Rp 5.000 | Parkir Mobil: Rp 10.000 | Parkir Bus: Rp 15.000 | Tiket Weekday: Rp 35.000 | Tiket Weekend: Rp 40.000'),
 
-('Taman Kreatif Wangi Lestari',
- 'Taman bunga dan tanaman aromatik dengan berbagai instalasi seni kreatif yang instagramable.',
- 'Taman Kreatif Wangi Lestari adalah ruang terbuka hijau yang memadukan keindahan bunga-bunga berwarna-warni dengan instalasi seni kreatif karya seniman lokal. Aroma bunga lavender, mawar, dan melati menyambut pengunjung. Tersedia workshop membuat potpourri dan produk aromaterapi.',
- '08:00 - 17:00', 20000, -7.93150000, 112.40250000,
- 'Pagi hingga siang hari',
- TRUE, 'Motor, Mobil', TRUE, 4.6),
+-- 3. Bukit Nirwana
+('Bukit Nirwana',
+ 'Bukit dengan panorama alam Pujon Kidul yang memukau, cocok untuk trekking dan foto sunrise.',
+ 'Bukit Nirwana menawarkan pemandangan alam Pujon Kidul yang spektakuler dari ketinggian. Pengunjung dapat menikmati hamparan sawah, kebun teh, dan siluet pegunungan yang memukau. Jalur trekking yang tidak terlalu berat menjadikannya cocok untuk semua kalangan. Spot terbaik untuk foto sunrise dan sunset.',
+ '08:00 - 17:00', 10000, -7.93450000, 112.39650000,
+ 'Pagi hari untuk sunrise atau sore hari untuk sunset',
+ TRUE, 'Motor, Mobil', FALSE, 4.5,
+ 'Tulungrejo, Pujon Kidul, Malang',
+ 'Parkir Motor: Rp 5.000 | Parkir Mobil: Rp 10.000'),
 
-('Air Terjun Sumber Pitu',
- 'Air terjun tujuh sumber dengan air jernih dan suasana hutan tropis yang menyejukkan.',
- 'Air Terjun Sumber Pitu merupakan air terjun alami dengan tujuh sumber mata air yang mengalir membentuk air terjun bertingkat. Dikelilingi hutan tropis yang lebat, suasananya sangat sejuk dan menyegarkan. Jalur trekking menuju air terjun melewati kebun teh dan hutan pinus.',
- '07:00 - 16:00', 15000, -7.94200000, 112.38750000,
- 'Musim kemarau (April-Oktober)',
- FALSE, 'Motor (parkir di bawah, jalan kaki 30 menit)', FALSE, 4.8),
+-- 4. Bobocabin Coban Rondo
+('Bobocabin Coban Rondo',
+ 'Glamping premium di tengah hutan pinus dengan fasilitas modern dan pemandangan alam yang menakjubkan.',
+ 'Bobocabin Coban Rondo menghadirkan pengalaman glamping (glamorous camping) premium di tengah hutan pinus kawasan Coban Rondo. Setiap kabin dilengkapi fasilitas modern seperti AC, kamar mandi dalam, dan tempat tidur nyaman, sambil tetap merasakan nuansa alam yang autentik. Tersedia berbagai aktivitas outdoor di sekitar kawasan.',
+ '24 jam (check-in 14:00, check-out 12:00)', 35000, -7.87650000, 112.52050000,
+ 'Sepanjang tahun, terutama musim kemarau (April-Oktober)',
+ TRUE, 'Motor, Mobil', TRUE, 4.9,
+ 'Jl. Coban Rondo, Pandesari, Pujon, Malang',
+ 'Parkir Motor: Rp 5.000 | Parkir Mobil: Rp 10.000 | Tiket Weekday: Rp 35.000 | Tiket Weekend: Rp 40.000'),
 
-('Wisata Petik Buah',
- 'Kebun buah tropis dengan pengalaman memetik apel, stroberi, dan jeruk langsung dari pohonnya.',
- 'Wisata Petik Buah menawarkan pengalaman memetik buah-buahan segar langsung dari pohon. Tersedia kebun apel, stroberi, jeruk, dan jambu kristal. Pengunjung dapat membeli buah yang dipetik dengan harga langsung dari petani. Tersedia juga jus buah segar di area wisata.',
- '08:00 - 16:00', 20000, -7.92780000, 112.40450000,
- 'Musim panen (Mei-Agustus)',
- TRUE, 'Motor, Mobil', FALSE, 4.4),
+-- 5. Kelinci Park
+('Kelinci Park',
+ 'Taman wisata keluarga dengan ratusan kelinci lucu yang bisa diajak berinteraksi langsung.',
+ 'Kelinci Park Pujon adalah destinasi wisata keluarga yang menyenangkan dengan ratusan kelinci berbagai ras yang bisa diajak berinteraksi langsung. Pengunjung dapat memberi makan, menggendong, dan berfoto bersama kelinci-kelinci lucu. Cocok untuk anak-anak dan keluarga yang ingin pengalaman wisata edukatif yang menyenangkan.',
+ '08:00 - 17:00', 20000, -7.87890000, 112.51760000,
+ 'Pagi hingga siang hari, cocok untuk anak-anak',
+ TRUE, 'Motor', FALSE, 4.4,
+ 'Jurangrejo, Pandesari, Pujon, Malang',
+ 'Parkir Motor: Rp 5.000 | Tiket Dewasa: Rp 20.000 | Tiket Anak: Rp 10.000'),
 
-('Camping Ground Pujon',
- 'Area berkemah dengan pemandangan bintang terbaik dan udara pegunungan yang segar.',
- 'Camping Ground Pujon menyediakan area berkemah yang luas dengan pemandangan pegunungan dan lembah yang spektakuler. Pada malam hari, langit bebas polusi cahaya menjadikannya spot terbaik untuk melihat bintang. Tersedia fasilitas toilet, air bersih, dan warung makan di sekitar area.',
- '24 jam (check-in 14:00)', 35000, -7.93500000, 112.39500000,
- 'Musim kemarau, akhir pekan',
- TRUE, 'Motor, Mobil', FALSE, 4.3),
-
-('Peternakan Sapi Pujon',
- 'Wisata edukasi peternakan sapi perah dengan pengalaman memerah susu langsung.',
- 'Peternakan Sapi Pujon adalah wisata edukasi yang memperkenalkan proses peternakan sapi perah modern. Pengunjung dapat melihat proses pemerahan susu, pengolahan susu segar, dan mencicipi berbagai produk olahan susu seperti yogurt, keju, dan es krim susu segar.',
- '07:00 - 15:00', 25000, -7.92650000, 112.40600000,
- 'Pagi hari saat pemerahan (07:00-09:00)',
- TRUE, 'Motor, Mobil', FALSE, 4.5),
-
-('Kampung Budaya',
- 'Desa wisata yang melestarikan tradisi dan budaya lokal Jawa dengan pertunjukan seni.',
- 'Kampung Budaya Pujon Kidul adalah pusat pelestarian budaya Jawa yang menampilkan pertunjukan tari tradisional, wayang kulit, dan gamelan. Pengunjung dapat belajar membatik, membuat gerabah, dan memasak masakan tradisional Jawa. Tersedia homestay untuk pengalaman menginap di rumah warga.',
- '09:00 - 17:00', 30000, -7.92950000, 112.40050000,
- 'Akhir pekan (ada pertunjukan seni)',
- TRUE, 'Motor, Mobil', FALSE, 4.6),
-
-('Gardu Pandang Pujon',
- 'Menara pandang dengan panorama 360 derajat kawasan Pujon Kidul dan Gunung Kawi.',
- 'Gardu Pandang Pujon adalah titik tertinggi yang dapat diakses di kawasan wisata Pujon Kidul. Dari atas menara setinggi 15 meter, pengunjung dapat menikmati panorama 360 derajat yang mencakup hamparan sawah, kebun teh, dan siluet Gunung Kawi di kejauhan. Spot terbaik untuk sunrise dan sunset.',
- '05:30 - 18:00', 10000, -7.93300000, 112.39850000,
- 'Sunrise (05:30-07:00) atau Sunset (16:30-18:00)',
- TRUE, 'Motor, Mobil', FALSE, 4.7),
-
-('Pasar Desa Pujon',
- 'Pasar tradisional desa dengan produk lokal, kuliner khas, dan kerajinan tangan Pujon Kidul.',
- 'Pasar Desa Pujon adalah pasar tradisional yang beroperasi setiap hari dengan menjual berbagai produk lokal. Tersedia sayuran segar hasil panen petani setempat, produk olahan susu, kerajinan tangan bambu dan rotan, serta berbagai kuliner khas Pujon seperti nasi jagung, pecel, dan minuman wedang jahe.',
- '05:00 - 12:00', 0, -7.92700000, 112.40150000,
- 'Pagi hari (05:00-09:00) saat pasar ramai',
- TRUE, 'Motor, Mobil', FALSE, 4.2);
+-- 6. Florawisata Santerra De Laponte
+('Florawisata Santerra De Laponte',
+ 'Taman bunga Eropa di Malang dengan ribuan bunga berwarna-warni dan spot foto instagramable.',
+ 'Florawisata Santerra De Laponte adalah taman bunga bergaya Eropa yang memukau di kawasan Pujon. Ribuan bunga berwarna-warni dari berbagai penjuru dunia ditata dengan indah menciptakan pemandangan yang memesona. Tersedia berbagai spot foto instagramable, area piknik, dan wahana keluarga. Destinasi wajib kunjung bagi pecinta bunga dan fotografi.',
+ '08:00 - 17:00', 30000, -7.87340000, 112.52340000,
+ 'Pagi hari (08:00-11:00) saat bunga mekar sempurna',
+ TRUE, 'Motor, Mobil, Bus', TRUE, 4.8,
+ 'Jl. Truno Joyo, Pandesari, Pujon, Malang',
+ 'Parkir Motor: Rp 5.000 | Parkir Mobil: Rp 10.000 | Parkir Bus: Rp 15.000 | Tiket Reguler Weekday: Rp 30.000 | Tiket Reguler Weekend: Rp 35.000 | Tiket Terusan Weekday: Rp 70.000 | Tiket Terusan Weekend: Rp 85.000');
 
 -- ============================================================
 -- Seed: Detail destinasi (visitor_data 12 bulan + image_url)
+-- Koordinat diambil dari Google Maps
 -- ============================================================
 
--- Cafe Sawah (destination_id = 1)
+-- Cafe Sawah (id=1)
 INSERT INTO destination_details (destination_id, visitor_data, image_url) VALUES
 (1,
  '[{"month":"Jan","count":1850},{"month":"Feb","count":1620},{"month":"Mar","count":1900},{"month":"Apr","count":2100},{"month":"Mei","count":2350},{"month":"Jun","count":2800},{"month":"Jul","count":3200},{"month":"Agu","count":3100},{"month":"Sep","count":2600},{"month":"Okt","count":2200},{"month":"Nov","count":1950},{"month":"Des","count":2700}]',
- '/images/placeholder.jpg' -- Ganti gambar di sini
+ 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-nature-natural-beauty.jpg/1280px-24701-nature-natural-beauty.jpg'
 );
 
--- Wisata Petik Sayur (destination_id = 2)
+-- Coban Rondo (id=2)
 INSERT INTO destination_details (destination_id, visitor_data, image_url) VALUES
 (2,
- '[{"month":"Jan","count":980},{"month":"Feb","count":870},{"month":"Mar","count":1050},{"month":"Apr","count":1200},{"month":"Mei","count":1450},{"month":"Jun","count":1700},{"month":"Jul","count":1900},{"month":"Agu","count":1850},{"month":"Sep","count":1500},{"month":"Okt","count":1250},{"month":"Nov","count":1100},{"month":"Des","count":1600}]',
- '/images/placeholder.jpg' -- Ganti gambar di sini
+ '[{"month":"Jan","count":2200},{"month":"Feb","count":1980},{"month":"Mar","count":2400},{"month":"Apr","count":2800},{"month":"Mei","count":3100},{"month":"Jun","count":3600},{"month":"Jul","count":4200},{"month":"Agu","count":4100},{"month":"Sep","count":3500},{"month":"Okt","count":2900},{"month":"Nov","count":2400},{"month":"Des","count":3800}]',
+ 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-nature-natural-beauty.jpg/1280px-24701-nature-natural-beauty.jpg'
 );
 
--- Taman Kreatif Wangi Lestari (destination_id = 3)
+-- Bukit Nirwana (id=3)
 INSERT INTO destination_details (destination_id, visitor_data, image_url) VALUES
 (3,
- '[{"month":"Jan","count":1100},{"month":"Feb","count":950},{"month":"Mar","count":1200},{"month":"Apr","count":1350},{"month":"Mei","count":1600},{"month":"Jun","count":1900},{"month":"Jul","count":2100},{"month":"Agu","count":2050},{"month":"Sep","count":1700},{"month":"Okt","count":1400},{"month":"Nov","count":1200},{"month":"Des","count":1800}]',
- '/images/placeholder.jpg' -- Ganti gambar di sini
+ '[{"month":"Jan","count":980},{"month":"Feb","count":870},{"month":"Mar","count":1050},{"month":"Apr","count":1200},{"month":"Mei","count":1450},{"month":"Jun","count":1700},{"month":"Jul","count":1900},{"month":"Agu","count":1850},{"month":"Sep","count":1500},{"month":"Okt","count":1250},{"month":"Nov","count":1100},{"month":"Des","count":1600}]',
+ 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-nature-natural-beauty.jpg/1280px-24701-nature-natural-beauty.jpg'
 );
 
--- Air Terjun Sumber Pitu (destination_id = 4)
+-- Bobocabin Coban Rondo (id=4)
 INSERT INTO destination_details (destination_id, visitor_data, image_url) VALUES
 (4,
- '[{"month":"Jan","count":650},{"month":"Feb","count":580},{"month":"Mar","count":700},{"month":"Apr","count":1100},{"month":"Mei","count":1400},{"month":"Jun","count":1750},{"month":"Jul","count":2000},{"month":"Agu","count":1950},{"month":"Sep","count":1600},{"month":"Okt","count":1200},{"month":"Nov","count":750},{"month":"Des","count":900}]',
- '/images/placeholder.jpg' -- Ganti gambar di sini
+ '[{"month":"Jan","count":650},{"month":"Feb","count":580},{"month":"Mar","count":700},{"month":"Apr","count":900},{"month":"Mei","count":1100},{"month":"Jun","count":1400},{"month":"Jul","count":1800},{"month":"Agu","count":1750},{"month":"Sep","count":1300},{"month":"Okt","count":1000},{"month":"Nov","count":750},{"month":"Des","count":1200}]',
+ 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-nature-natural-beauty.jpg/1280px-24701-nature-natural-beauty.jpg'
 );
 
--- Wisata Petik Buah (destination_id = 5)
+-- Kelinci Park (id=5)
 INSERT INTO destination_details (destination_id, visitor_data, image_url) VALUES
 (5,
- '[{"month":"Jan","count":700},{"month":"Feb","count":620},{"month":"Mar","count":750},{"month":"Apr","count":850},{"month":"Mei","count":1500},{"month":"Jun","count":1800},{"month":"Jul","count":1950},{"month":"Agu","count":1900},{"month":"Sep","count":1100},{"month":"Okt","count":850},{"month":"Nov","count":720},{"month":"Des","count":950}]',
- '/images/placeholder.jpg' -- Ganti gambar di sini
+ '[{"month":"Jan","count":720},{"month":"Feb","count":640},{"month":"Mar","count":780},{"month":"Apr","count":900},{"month":"Mei","count":1050},{"month":"Jun","count":1300},{"month":"Jul","count":1500},{"month":"Agu","count":1450},{"month":"Sep","count":1150},{"month":"Okt","count":950},{"month":"Nov","count":800},{"month":"Des","count":1100}]',
+ 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-nature-natural-beauty.jpg/1280px-24701-nature-natural-beauty.jpg'
 );
 
--- Camping Ground Pujon (destination_id = 6)
+-- Florawisata Santerra De Laponte (id=6)
 INSERT INTO destination_details (destination_id, visitor_data, image_url) VALUES
 (6,
- '[{"month":"Jan","count":420},{"month":"Feb","count":380},{"month":"Mar","count":450},{"month":"Apr","count":600},{"month":"Mei","count":850},{"month":"Jun","count":1100},{"month":"Jul","count":1400},{"month":"Agu","count":1350},{"month":"Sep","count":1000},{"month":"Okt","count":700},{"month":"Nov","count":480},{"month":"Des","count":750}]',
- '/images/placeholder.jpg' -- Ganti gambar di sini
-);
-
--- Peternakan Sapi Pujon (destination_id = 7)
-INSERT INTO destination_details (destination_id, visitor_data, image_url) VALUES
-(7,
- '[{"month":"Jan","count":550},{"month":"Feb","count":490},{"month":"Mar","count":600},{"month":"Apr","count":700},{"month":"Mei","count":850},{"month":"Jun","count":1000},{"month":"Jul","count":1150},{"month":"Agu","count":1100},{"month":"Sep","count":900},{"month":"Okt","count":750},{"month":"Nov","count":620},{"month":"Des","count":880}]',
- '/images/placeholder.jpg' -- Ganti gambar di sini
-);
-
--- Kampung Budaya (destination_id = 8)
-INSERT INTO destination_details (destination_id, visitor_data, image_url) VALUES
-(8,
- '[{"month":"Jan","count":480},{"month":"Feb","count":420},{"month":"Mar","count":510},{"month":"Apr","count":600},{"month":"Mei","count":720},{"month":"Jun","count":900},{"month":"Jul","count":1050},{"month":"Agu","count":1000},{"month":"Sep","count":820},{"month":"Okt","count":680},{"month":"Nov","count":540},{"month":"Des","count":780}]',
- '/images/placeholder.jpg' -- Ganti gambar di sini
-);
-
--- Gardu Pandang Pujon (destination_id = 9)
-INSERT INTO destination_details (destination_id, visitor_data, image_url) VALUES
-(9,
- '[{"month":"Jan","count":900},{"month":"Feb","count":800},{"month":"Mar","count":950},{"month":"Apr","count":1100},{"month":"Mei","count":1300},{"month":"Jun","count":1600},{"month":"Jul","count":1850},{"month":"Agu","count":1800},{"month":"Sep","count":1450},{"month":"Okt","count":1150},{"month":"Nov","count":950},{"month":"Des","count":1400}]',
- '/images/placeholder.jpg' -- Ganti gambar di sini
-);
-
--- Pasar Desa Pujon (destination_id = 10)
-INSERT INTO destination_details (destination_id, visitor_data, image_url) VALUES
-(10,
- '[{"month":"Jan","count":1200},{"month":"Feb","count":1050},{"month":"Mar","count":1300},{"month":"Apr","count":1450},{"month":"Mei","count":1600},{"month":"Jun","count":1800},{"month":"Jul","count":2000},{"month":"Agu","count":1950},{"month":"Sep","count":1650},{"month":"Okt","count":1400},{"month":"Nov","count":1250},{"month":"Des","count":1750}]',
- '/images/placeholder.jpg' -- Ganti gambar di sini
+ '[{"month":"Jan","count":2500},{"month":"Feb","count":2200},{"month":"Mar","count":2700},{"month":"Apr","count":3100},{"month":"Mei","count":3500},{"month":"Jun","count":4000},{"month":"Jul","count":4800},{"month":"Agu","count":4600},{"month":"Sep","count":3800},{"month":"Okt","count":3200},{"month":"Nov","count":2700},{"month":"Des","count":4200}]',
+ 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-nature-natural-beauty.jpg/1280px-24701-nature-natural-beauty.jpg'
 );
 
 -- ============================================================
--- Seed: Paket Wisata (minimal 2 paket per destinasi, ~20 paket)
+-- Seed: Paket Wisata (2 paket per destinasi)
 -- ============================================================
 
--- Paket untuk Cafe Sawah (destination_id = 1)
+-- Cafe Sawah (id=1)
 INSERT INTO travel_packages (destination_id, name, description, price, duration, includes) VALUES
-(1, 'Paket Sarapan Sawah', 'Nikmati sarapan pagi dengan menu tradisional di tengah hamparan sawah hijau.', 45000, '2 jam', 'Tiket masuk, sarapan nasi jagung + lauk, minuman wedang jahe'),
-(1, 'Paket Foto Sawah Premium', 'Sesi foto profesional di berbagai spot instagramable area persawahan.', 75000, '3 jam', 'Tiket masuk, pemandu foto, 1 minuman gratis, akses semua spot foto');
+(1, 'Paket Sarapan Sawah', 'Sarapan pagi dengan menu tradisional di tengah hamparan sawah hijau.', 45000, '2 jam', 'Tiket masuk, sarapan nasi jagung + lauk, minuman wedang jahe'),
+(1, 'Paket Foto Sawah Premium', 'Sesi foto di berbagai spot instagramable area persawahan.', 75000, '3 jam', 'Tiket masuk, pemandu foto, 1 minuman gratis, akses semua spot foto');
 
--- Paket untuk Wisata Petik Sayur (destination_id = 2)
+-- Coban Rondo (id=2)
 INSERT INTO travel_packages (destination_id, name, description, price, duration, includes) VALUES
-(2, 'Paket Petik Sayur Keluarga', 'Pengalaman memetik sayuran segar bersama keluarga dengan panduan petani lokal.', 60000, '2 jam', 'Tiket masuk, 1 kg sayuran pilihan, panduan petani, keranjang petik'),
-(2, 'Paket Edukasi Pertanian', 'Paket edukatif untuk anak-anak tentang cara bercocok tanam sayuran organik.', 80000, '3 jam', 'Tiket masuk, sesi edukasi, menanam bibit sendiri, 500 gr sayuran, sertifikat');
+(2, 'Paket Wisata Coban Rondo', 'Nikmati keindahan air terjun 84 meter dengan pemandu lokal berpengalaman.', 75000, '3 jam', 'Tiket masuk, pemandu wisata, air minum, snack'),
+(2, 'Paket Adventure Coban Rondo', 'Paket lengkap termasuk flying fox dan wahana seru lainnya.', 150000, '5 jam', 'Tiket masuk, flying fox, wahana seru, makan siang, pemandu');
 
--- Paket untuk Taman Kreatif Wangi Lestari (destination_id = 3)
+-- Bukit Nirwana (id=3)
 INSERT INTO travel_packages (destination_id, name, description, price, duration, includes) VALUES
-(3, 'Paket Workshop Potpourri', 'Belajar membuat potpourri dan produk aromaterapi dari bunga-bunga segar.', 85000, '2.5 jam', 'Tiket masuk, bahan workshop, 1 produk potpourri hasil karya sendiri, teh bunga'),
-(3, 'Paket Foto Taman Bunga', 'Sesi foto di berbagai sudut taman bunga yang indah dengan kostum tradisional.', 70000, '2 jam', 'Tiket masuk, sewa kostum tradisional, pemandu foto, 1 minuman herbal');
+(3, 'Paket Trekking Bukit Nirwana', 'Trekking santai menikmati panorama alam Pujon Kidul dari ketinggian.', 50000, '3 jam', 'Tiket masuk, pemandu trekking, air minum, snack energi'),
+(3, 'Paket Sunrise Bukit Nirwana', 'Saksikan matahari terbit dari puncak bukit dengan pemandangan spektakuler.', 65000, '2 jam', 'Tiket masuk, pemandu, kopi/teh hangat, foto kenangan');
 
--- Paket untuk Air Terjun Sumber Pitu (destination_id = 4)
+-- Bobocabin Coban Rondo (id=4)
 INSERT INTO travel_packages (destination_id, name, description, price, duration, includes) VALUES
-(4, 'Paket Trekking Sumber Pitu', 'Trekking menyusuri jalur hutan menuju air terjun tujuh sumber yang menakjubkan.', 65000, '4 jam', 'Tiket masuk, pemandu trekking, air minum, snack energi, asuransi perjalanan'),
-(4, 'Paket Petualangan Alam', 'Paket lengkap trekking + berenang di kolam alami air terjun + makan siang.', 120000, '6 jam', 'Tiket masuk, pemandu, makan siang bekal, air minum, snack, asuransi');
+(4, 'Paket Glamping 1 Malam', 'Menginap semalam di kabin premium dengan fasilitas lengkap di tengah hutan pinus.', 450000, '1 malam', 'Kabin premium, sarapan, akses kawasan Coban Rondo, welcome drink'),
+(4, 'Paket Glamping Weekend', 'Paket glamping 2 malam untuk pengalaman alam yang lebih mendalam.', 850000, '2 malam', 'Kabin premium, 2x sarapan, 2x makan malam, akses kawasan, aktivitas outdoor');
 
--- Paket untuk Wisata Petik Buah (destination_id = 5)
+-- Kelinci Park (id=5)
 INSERT INTO travel_packages (destination_id, name, description, price, duration, includes) VALUES
-(5, 'Paket Petik Apel & Stroberi', 'Memetik apel dan stroberi segar langsung dari pohon dengan panduan petani.', 75000, '2 jam', 'Tiket masuk, 500 gr apel + 250 gr stroberi, jus buah segar, keranjang petik'),
-(5, 'Paket Kebun Buah Lengkap', 'Akses ke semua kebun buah termasuk jeruk, jambu kristal, dan buah musiman.', 100000, '3 jam', 'Tiket masuk, 1 kg buah pilihan, jus buah 2 gelas, panduan kebun');
+(5, 'Paket Keluarga Kelinci Park', 'Paket seru untuk keluarga dengan anak-anak berinteraksi langsung dengan kelinci.', 60000, '2 jam', 'Tiket masuk (2 dewasa + 2 anak), pakan kelinci, foto bersama kelinci'),
+(5, 'Paket Edukasi Kelinci', 'Paket edukatif tentang cara merawat dan memelihara kelinci untuk anak-anak.', 80000, '2.5 jam', 'Tiket masuk, sesi edukasi, pakan kelinci, sertifikat, foto kenangan');
 
--- Paket untuk Camping Ground Pujon (destination_id = 6)
+-- Florawisata Santerra De Laponte (id=6)
 INSERT INTO travel_packages (destination_id, name, description, price, duration, includes) VALUES
-(6, 'Paket Camping 1 Malam', 'Berkemah semalam di bawah bintang dengan pemandangan pegunungan yang spektakuler.', 150000, '1 malam', 'Tiket masuk, sewa tenda 2 orang, sleeping bag, makan malam + sarapan, api unggun'),
-(6, 'Paket Camping Weekend', 'Paket berkemah 2 malam untuk pengalaman alam yang lebih mendalam.', 250000, '2 malam', 'Tiket masuk, sewa tenda, sleeping bag, 2x makan malam + 2x sarapan, api unggun, pemandu');
-
--- Paket untuk Peternakan Sapi Pujon (destination_id = 7)
-INSERT INTO travel_packages (destination_id, name, description, price, duration, includes) VALUES
-(7, 'Paket Edukasi Peternakan', 'Belajar proses peternakan sapi perah dari pemerahan hingga pengolahan susu.', 70000, '2 jam', 'Tiket masuk, sesi edukasi, pengalaman memerah susu, 1 gelas susu segar'),
-(7, 'Paket Olahan Susu Segar', 'Mencicipi dan membuat produk olahan susu seperti yogurt dan es krim.', 95000, '3 jam', 'Tiket masuk, workshop membuat yogurt, 1 cup yogurt + es krim, 500 ml susu segar');
-
--- Paket untuk Kampung Budaya (destination_id = 8)
-INSERT INTO travel_packages (destination_id, name, description, price, duration, includes) VALUES
-(8, 'Paket Seni Budaya Jawa', 'Menyaksikan pertunjukan tari tradisional dan wayang kulit serta belajar gamelan.', 90000, '3 jam', 'Tiket masuk, pertunjukan seni, sesi belajar gamelan, snack tradisional'),
-(8, 'Paket Homestay Budaya', 'Menginap di rumah warga dan merasakan kehidupan sehari-hari masyarakat Pujon.', 200000, '1 malam', 'Tiket masuk, menginap 1 malam, makan 3x, workshop batik, pertunjukan seni malam');
-
--- Paket untuk Gardu Pandang Pujon (destination_id = 9)
-INSERT INTO travel_packages (destination_id, name, description, price, duration, includes) VALUES
-(9, 'Paket Sunrise Gardu Pandang', 'Menyaksikan matahari terbit dari ketinggian dengan pemandangan Gunung Kawi.', 40000, '2 jam', 'Tiket masuk, akses menara pandang, kopi/teh hangat, foto kenangan'),
-(9, 'Paket Sunset & Foto Panorama', 'Menikmati sunset spektakuler dan sesi foto panorama 360 derajat.', 50000, '2 jam', 'Tiket masuk, akses menara pandang, minuman hangat, pemandu foto spot terbaik');
-
--- Paket untuk Pasar Desa Pujon (destination_id = 10)
-INSERT INTO travel_packages (destination_id, name, description, price, duration, includes) VALUES
-(10, 'Paket Kuliner Pasar Desa', 'Tur kuliner menjelajahi berbagai jajanan dan makanan khas Pujon di pasar tradisional.', 50000, '2 jam', 'Pemandu pasar, voucher jajan Rp 30.000, tas belanja kain, resep masakan tradisional'),
-(10, 'Paket Belanja Produk Lokal', 'Berbelanja produk lokal pilihan dengan panduan untuk mendapatkan harga terbaik.', 35000, '1.5 jam', 'Pemandu belanja, voucher diskon produk mitra, tas belanja, 1 minuman tradisional');
+(6, 'Paket Reguler Santerra', 'Nikmati keindahan taman bunga Eropa dengan tiket reguler dan pemandu.', 50000, '3 jam', 'Tiket masuk reguler, pemandu taman, peta lokasi spot foto terbaik'),
+(6, 'Paket Terusan Santerra Premium', 'Akses penuh ke semua area taman termasuk wahana dan atraksi premium.', 100000, '5 jam', 'Tiket terusan, semua wahana, pemandu, makan siang, foto kenangan');
 
 -- ============================================================
--- Seed: 5 Rute Akses Jalan
+-- Seed: 4 Rute Akses Jalan (sesuai spesifikasi baru)
 -- ============================================================
 
 INSERT INTO routes (name, description, status, last_updated) VALUES
-('Jalur Utama Malang - Pujon via Batu',
- 'Rute paling populer dari Kota Malang melalui Kota Batu. Jalan beraspal mulus, lebar 2 jalur, cocok untuk semua jenis kendaraan. Jarak ±35 km, waktu tempuh ±1 jam.',
+('Jalur Utama Batu–Pujon',
+ 'Rute paling populer dari Kota Batu menuju Pujon Kidul. Jalan beraspal mulus, lebar 2 jalur, cocok untuk semua jenis kendaraan. Jarak ±15 km, waktu tempuh ±30 menit.',
  'baik', NOW()),
 
-('Jalur Alternatif Kepanjen - Pujon',
- 'Rute alternatif dari arah selatan melalui Kepanjen dan Ngajum. Jalan lebih sempit namun pemandangan lebih indah melewati perkebunan. Jarak ±45 km, waktu tempuh ±1.5 jam.',
+('Jalur Alternatif Songgoriti',
+ 'Rute via Songgoriti dengan pemandangan lebih indah melewati perkebunan dan hutan pinus. Jalan lebih sempit, disarankan untuk motor dan mobil kecil. Jarak ±18 km.',
  'sedang', NOW()),
 
-('Jalur Singosari - Pujon via Karangploso',
- 'Rute dari arah utara melalui Singosari dan Karangploso. Cocok untuk pengunjung dari arah Surabaya. Jarak ±40 km dari Singosari, waktu tempuh ±1.2 jam.',
+('Jalur dari Malang Kota',
+ 'Rute dari pusat Kota Malang via Batu menuju Pujon Kidul. Cocok untuk pengunjung dari arah Surabaya dan sekitarnya. Jarak ±35 km, waktu tempuh ±1 jam.',
  'baik', NOW()),
 
-('Jalur Dalam Kawasan Pujon Kidul',
- 'Jalan desa di dalam kawasan wisata Pujon Kidul menghubungkan semua destinasi. Jalan sempit (1 jalur), disarankan menggunakan motor atau berjalan kaki antar destinasi.',
- 'baik', NOW()),
-
-('Jalur Pujon - Air Terjun Sumber Pitu',
- 'Jalur khusus menuju Air Terjun Sumber Pitu. Jalan tanah berbatu setelah parkiran, hanya bisa dilalui motor atau berjalan kaki. Trekking ±30 menit dari area parkir.',
- 'sedang', NOW());
+('Jalur Kediri–Pujon',
+ 'Rute dari arah barat via Kota Kediri melewati pegunungan. Pemandangan indah namun jalan berkelok. Jarak ±80 km, waktu tempuh ±2 jam.',
+ 'baik', NOW());
 
 -- ============================================================
 -- Seed: 6 Provinsi Jawa
@@ -331,7 +275,7 @@ INSERT INTO provinces (name) VALUES
 -- Seed: Kota-kota per provinsi dengan jarak ke Pujon Kidul
 -- ============================================================
 
--- DKI Jakarta (province_id = 1), jarak sekitar 810-835 km
+-- DKI Jakarta (province_id = 1)
 INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel_consumption_car) VALUES
 (1, 'Jakarta Pusat',  820, 45.00, 14.00),
 (1, 'Jakarta Utara',  835, 45.00, 14.00),
@@ -339,7 +283,7 @@ INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel
 (1, 'Jakarta Selatan',825, 45.00, 14.00),
 (1, 'Jakarta Timur',  810, 45.00, 14.00);
 
--- Banten (province_id = 2), jarak sekitar 795-940 km
+-- Banten (province_id = 2)
 INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel_consumption_car) VALUES
 (2, 'Kota Serang',            870, 45.00, 13.50),
 (2, 'Kota Cilegon',           890, 45.00, 13.50),
@@ -350,7 +294,7 @@ INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel
 (2, 'Kabupaten Lebak',        940, 44.00, 13.00),
 (2, 'Kabupaten Tangerang',    795, 45.00, 14.00);
 
--- Jawa Barat (province_id = 3), jarak sekitar 530-810 km
+-- Jawa Barat (province_id = 3)
 INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel_consumption_car) VALUES
 (3, 'Kota Bandung',        620, 46.00, 14.50),
 (3, 'Kota Bekasi',         790, 45.00, 14.00),
@@ -366,7 +310,7 @@ INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel
 (3, 'Kabupaten Garut',     580, 46.00, 14.00),
 (3, 'Kabupaten Tasikmalaya',540, 46.00, 14.00);
 
--- Jawa Tengah (province_id = 4), jarak sekitar 280-450 km
+-- Jawa Tengah (province_id = 4)
 INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel_consumption_car) VALUES
 (4, 'Kota Semarang',      380, 47.00, 15.00),
 (4, 'Kota Surakarta',     280, 47.00, 15.50),
@@ -381,7 +325,7 @@ INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel
 (4, 'Kabupaten Cilacap',  390, 47.00, 15.00),
 (4, 'Kabupaten Kebumen',  340, 47.00, 15.00);
 
--- DI Yogyakarta (province_id = 5), jarak sekitar 255-290 km
+-- DI Yogyakarta (province_id = 5)
 INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel_consumption_car) VALUES
 (5, 'Kota Yogyakarta',       260, 47.00, 15.50),
 (5, 'Kabupaten Sleman',      255, 47.00, 15.50),
@@ -389,11 +333,11 @@ INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel
 (5, 'Kabupaten Gunungkidul', 290, 47.00, 15.00),
 (5, 'Kabupaten Kulon Progo', 280, 47.00, 15.00);
 
--- Jawa Timur (province_id = 6), jarak sekitar 20-250 km
+-- Jawa Timur (province_id = 6)
 INSERT INTO cities (province_id, name, distance_km, fuel_consumption_motor, fuel_consumption_car) VALUES
 (6, 'Kota Surabaya',       110, 48.00, 16.00),
 (6, 'Kota Malang',          35, 50.00, 17.00),
-(6, 'Kota Batu',            20, 50.00, 17.00),
+(6, 'Kota Batu',            15, 50.00, 17.00),
 (6, 'Kota Kediri',          80, 49.00, 16.50),
 (6, 'Kota Blitar',          95, 49.00, 16.50),
 (6, 'Kota Madiun',         175, 48.00, 16.00),
