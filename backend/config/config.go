@@ -87,9 +87,13 @@ func Load() (*Config, error) {
 
 // DSN mengembalikan string koneksi PostgreSQL
 func (c *Config) DSN() string {
+	sslmode := "disable"
+	if c.DBHost != "localhost" && c.DBHost != "127.0.0.1" {
+		sslmode = "require"
+	}
 	return fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Jakarta",
-		c.DBHost, c.DBPort, c.DBUser, c.DBPassword, c.DBName,
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=Asia/Jakarta",
+		c.DBHost, c.DBPort, c.DBUser, c.DBPassword, c.DBName, sslmode,
 	)
 }
 
