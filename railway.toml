@@ -1,7 +1,6 @@
 [build]
-builder = "nixpacks"
-buildCommand = "cd backend && go build -o main ./cmd/main.go"
+builder = "dockerfile"
+dockerfilePath = "backend/Dockerfile"
 
 [deploy]
-startCommand = "cd backend && ./main"
 restartPolicyType = "on_failure"
