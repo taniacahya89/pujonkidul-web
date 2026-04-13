@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom'
 
-// 5 item navigasi — WebGIS dihapus
 const navItems = [
   { path: '/',            label: 'Beranda' },
   { path: '/wisata',      label: 'Wisata' },
@@ -9,22 +8,38 @@ const navItems = [
   { path: '/akses-jalan', label: 'Akses Jalan' },
 ]
 
-// Komponen navigasi utama dengan active state berdasarkan route saat ini
-// Menggunakan palette brand: dark=#41431B, green=#237227, cream=#E3DBBB
+// Navbar: background terang, teks gelap, active state underline tipis
 function Navbar() {
   return (
-    <nav className="sticky top-0 z-50 shadow-md" style={{ backgroundColor: '#41431B' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo dan nama aplikasi */}
-          <NavLink to="/" className="flex items-center gap-2">
-            <span className="text-2xl">🌿</span>
-            <span className="font-bold text-lg" style={{ color: '#E3DBBB' }}>
-              Pujon Kidul Explore
+    <nav
+      className="sticky top-0 z-50"
+      style={{
+        backgroundColor: 'var(--bg)',
+        borderBottom: '1px solid var(--surface-2)',
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between h-14">
+          {/* Brand */}
+          <NavLink
+            to="/"
+            style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            <span
+              className="font-display font-bold text-base"
+              style={{ color: 'var(--text-1)', letterSpacing: '-0.01em' }}
+            >
+              Pujon Kidul
+            </span>
+            <span
+              className="text-xs font-medium px-2 py-0.5 rounded"
+              style={{ backgroundColor: 'var(--surface)', color: 'var(--text-2)' }}
+            >
+              Explore
             </span>
           </NavLink>
 
-          {/* Link navigasi desktop */}
+          {/* Desktop links */}
           <div className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <NavLink
@@ -32,14 +47,14 @@ function Navbar() {
                 to={item.path}
                 end={item.path === '/'}
                 style={({ isActive }) => ({
-                  padding: '6px 14px',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  transition: 'background-color 0.15s',
-                  backgroundColor: isActive ? '#237227' : 'transparent',
-                  color: isActive ? '#F8F3E1' : '#AEB784',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  fontWeight: isActive ? '600' : '400',
+                  color: isActive ? 'var(--text-1)' : 'var(--text-3)',
                   textDecoration: 'none',
+                  borderBottom: isActive ? '2px solid var(--accent)' : '2px solid transparent',
+                  transition: 'color 0.15s',
                 })}
               >
                 {item.label}
@@ -47,32 +62,28 @@ function Navbar() {
             ))}
           </div>
 
-          {/* Tombol CTA */}
-          <NavLink
-            to="/budget"
-            className="hidden md:block text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
-            style={{ backgroundColor: '#237227', color: '#F8F3E1' }}
-          >
+          {/* CTA */}
+          <NavLink to="/budget" className="hidden md:block btn-primary" style={{ textDecoration: 'none' }}>
             Rencanakan Wisata
           </NavLink>
         </div>
 
-        {/* Navigasi mobile — scroll horizontal */}
-        <div className="md:hidden flex gap-1 pb-3 overflow-x-auto">
+        {/* Mobile */}
+        <div className="md:hidden flex gap-1 pb-2 overflow-x-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               end={item.path === '/'}
               style={({ isActive }) => ({
-                padding: '4px 12px',
-                borderRadius: '8px',
+                padding: '4px 10px',
+                borderRadius: '6px',
                 fontSize: '12px',
-                fontWeight: '500',
+                fontWeight: isActive ? '600' : '400',
                 whiteSpace: 'nowrap',
-                backgroundColor: isActive ? '#237227' : 'transparent',
-                color: isActive ? '#F8F3E1' : '#AEB784',
+                color: isActive ? 'var(--text-1)' : 'var(--text-3)',
                 textDecoration: 'none',
+                borderBottom: isActive ? '2px solid var(--accent)' : '2px solid transparent',
               })}
             >
               {item.label}

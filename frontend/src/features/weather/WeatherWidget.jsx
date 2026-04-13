@@ -1,41 +1,49 @@
 import { useWeather } from '../../hooks/useWeather'
 import SkeletonLoader from '../../components/SkeletonLoader'
 
-// Komponen widget cuaca untuk section hero halaman beranda
-// Data cuaca diambil dari backend proxy — API key OWM tidak ada di frontend
 function WeatherWidget() {
   const { weather, isLoading, error } = useWeather()
 
-  if (isLoading) {
-    return <SkeletonLoader type="weather" />
-  }
+  if (isLoading) return <SkeletonLoader type="weather" />
 
-  // Tampilkan pesan error tanpa mengganggu konten lain
   if (error || !weather) {
     return (
-      <p className="text-sm italic" style={{ color: '#AEB784' }}>
-        ☁️ Data cuaca tidak tersedia saat ini
+      <p className="text-sm" style={{ color: 'rgba(248,243,225,0.5)', fontStyle: 'italic' }}>
+        Data cuaca tidak tersedia
       </p>
     )
   }
 
   return (
     <div
-      className="flex items-center gap-3 rounded-xl px-4 py-3 w-fit"
-      style={{ backgroundColor: 'rgba(76, 92, 45, 0.6)' }}
+      className="flex items-center gap-4 w-fit"
+      style={{
+        backgroundColor: 'rgba(20,22,8,0.4)',
+        border: '1px solid rgba(248,243,225,0.12)',
+        borderRadius: '10px',
+        padding: '12px 16px',
+      }}
     >
       <img
         src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
         alt={weather.condition}
-        className="w-12 h-12"
+        style={{ width: '44px', height: '44px' }}
       />
       <div>
-        <p className="font-bold text-2xl leading-none" style={{ color: '#F8F3E1' }}>
+        {/* Suhu — level 1 */}
+        <p
+          className="font-bold leading-none"
+          style={{ fontSize: '1.5rem', color: '#F8F3E1', marginBottom: '2px' }}
+        >
           {Math.round(weather.temp)}°C
         </p>
-        <p className="text-sm capitalize" style={{ color: '#AEB784' }}>{weather.description}</p>
-        <p className="text-xs mt-0.5" style={{ color: '#AEB877' }}>
-          💧 {weather.humidity}% · 💨 {weather.wind_speed} m/s
+        {/* Kondisi — level 2 */}
+        <p className="text-xs capitalize" style={{ color: 'rgba(248,243,225,0.65)', marginBottom: '2px' }}>
+          {weather.description}
+        </p>
+        {/* Metadata — level 3 */}
+        <p className="text-xs" style={{ color: 'rgba(248,243,225,0.45)' }}>
+          {weather.humidity}% kelembaban · {weather.wind_speed} m/s angin
         </p>
       </div>
     </div>
