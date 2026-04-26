@@ -99,4 +99,10 @@ func main() {
 	if err := app.Listen(":" + cfg.Port); err != nil {
 		log.Fatalf("[FATAL] Gagal menjalankan server: %v", err)
 	}
+
+	app.Get("/debug", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"message": "NEW CODE ACTIVE",
+		})
+	})
 }
