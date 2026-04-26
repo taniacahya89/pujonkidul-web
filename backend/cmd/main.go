@@ -62,6 +62,18 @@ func main() {
 	// Daftarkan semua route di bawah prefix /api/v1
 	api := app.Group("/api/v1")
 
+	// Alias /api/* → /api/v1/* untuk backward compatibility
+	// Memastikan client yang memanggil /api/destinations tetap valid
+	apiAlias := app.Group("/api")
+	apiAlias.Get("/destinations/featured", destHandler.GetFeaturedDestinations)
+	apiAlias.Get("/destinations/:id", destHandler.GetDestinationByID)
+	apiAlias.Get("/destinations", destHandler.GetAllDestinations)
+	apiAlias.Get("/weather", weatherHandler.GetWeather)
+	apiAlias.Get("/routes", routeHandler.GetAllRoutes)
+	apiAlias.Get("/provinces", provinceHandler.GetAllProvinces)
+	apiAlias.Get("/provinces/:id/cities", provinceHandler.GetCitiesByProvince)
+	apiAlias.Post("/budget/calculate", budgetHandler.CalculateBudget)
+
 	// Route destinasi
 	// PENTING: /destinations/featured harus didaftarkan SEBELUM /destinations/:id
 	// untuk menghindari konflik routing di Fiber
