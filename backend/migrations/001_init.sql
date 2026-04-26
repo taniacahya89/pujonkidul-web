@@ -16,6 +16,8 @@ CREATE TABLE destinations (
     full_description  TEXT NOT NULL,
     opening_hours     VARCHAR(100) NOT NULL,
     ticket_price      INTEGER NOT NULL DEFAULT 0,
+    ticket_weekday    INTEGER NOT NULL DEFAULT 0,
+    ticket_weekend    INTEGER NOT NULL DEFAULT 0,
     latitude          DECIMAL(10, 8) NOT NULL,
     longitude         DECIMAL(11, 8) NOT NULL,
     best_time         VARCHAR(255),
@@ -95,67 +97,67 @@ CREATE INDEX idx_cities_province_id          ON cities(province_id);
 -- is_featured = TRUE untuk: Florawisata (id=6), Bobocabin (id=4), Coban Rondo (id=2)
 -- ============================================================
 
-INSERT INTO destinations (name, short_description, full_description, opening_hours, ticket_price, latitude, longitude, best_time, parking_available, vehicle_access, is_featured, rating, address, parking_info) VALUES
+INSERT INTO destinations (name, short_description, full_description, opening_hours, ticket_price, ticket_weekday, ticket_weekend, latitude, longitude, best_time, parking_available, vehicle_access, is_featured, rating, address, parking_info) VALUES
 
--- 1. Cafe Sawah
+-- 1. Cafe Sawah — harga tunggal (weekday = weekend)
 ('Cafe Sawah',
  'Kafe unik di tengah hamparan sawah hijau dengan pemandangan pegunungan Pujon yang memukau.',
  'Cafe Sawah Pujon Kidul adalah destinasi wisata kuliner ikonik yang menawarkan pengalaman makan di tengah sawah yang hijau. Pengunjung dapat menikmati berbagai menu makanan dan minuman tradisional sambil menikmati pemandangan alam pegunungan Malang yang indah. Tersedia berbagai spot foto instagramable di area persawahan yang luas.',
- '08:00 - 18:00', 10000, -7.93120000, 112.39870000,
- 'Pagi hari (08:00-10:00) atau sore hari (15:00-17:00)',
+ 'Setiap hari 08.00-18.00', 10000, 10000, 10000, -7.85467500, 112.45356400,
+ 'Pagi hari (08.00-10.00) atau sore hari (15.00-17.00)',
  TRUE, 'Motor, Mobil', FALSE, 4.7,
- 'Kawasan Cafe Sawah, Desa Wisata, Krajan, Pujon Kidul',
- 'Parkir Motor: Rp 5.000 | Parkir Mobil: Rp 10.000'),
+ 'Kawasan Cafe Sawah, Desa Wisata, Krajan, Pujon Kidul, Kec. Pujon, Kabupaten Malang',
+ 'Motor: Rp 5.000 | Mobil: Rp 10.000'),
 
--- 2. Coban Rondo
+-- 2. Coban Rondo — weekday 35000, weekend 40000
 ('Coban Rondo',
  'Air terjun legendaris dengan ketinggian 84 meter dikelilingi hutan pinus yang sejuk dan asri.',
- 'Coban Rondo adalah air terjun ikonik di kawasan Pujon dengan ketinggian sekitar 84 meter. Dikelilingi hutan pinus yang lebat dan udara sejuk pegunungan, destinasi ini menjadi favorit wisatawan dari berbagai daerah. Tersedia area piknik, flying fox, dan berbagai wahana seru di sekitar kawasan air terjun.',
- '08:00 - 17:00', 35000, -7.87520000, 112.52180000,
- 'Pagi hari (08:00-11:00) untuk menghindari keramaian',
+ 'Coban Rondo adalah air terjun ikonik di kawasan Pujon dengan ketinggian sekitar 84 meter. Dikelilingi hutan pinus yang lebat dan udara sejuk pegunungan, destinasi ini menjadi favorit wisatawan dari berbagai daerah. Tersedia area piknik, flying fox, dan berbagai wahana seru di sekitar kawasan air terjun. Harga tiket: Weekday Rp 35.000, Weekend Rp 40.000.',
+ 'Setiap hari 08.00-17.00', 35000, 35000, 40000, -7.87038400, 112.48155400,
+ 'Pagi hari (08.00-11.00) untuk menghindari keramaian',
  TRUE, 'Motor, Mobil, Bus', TRUE, 4.8,
- 'Jl. Coban Rondo No.30, Pandesari, Pujon, Malang',
- 'Parkir Motor: Rp 5.000 | Parkir Mobil: Rp 10.000 | Parkir Bus: Rp 15.000 | Tiket Weekday: Rp 35.000 | Tiket Weekend: Rp 40.000'),
+ 'Jl. Coban Rondo No.30, Krajan, Pandesari, Kec. Pujon, Kabupaten Malang, Jawa Timur 65391',
+ 'Motor: Rp 5.000 | Mobil: Rp 10.000 | Bus: Rp 15.000'),
 
--- 3. Bukit Nirwana
+-- 3. Bukit Nirwana — harga tunggal
 ('Bukit Nirwana',
  'Bukit dengan panorama alam Pujon Kidul yang memukau, cocok untuk trekking dan foto sunrise.',
  'Bukit Nirwana menawarkan pemandangan alam Pujon Kidul yang spektakuler dari ketinggian. Pengunjung dapat menikmati hamparan sawah, kebun teh, dan siluet pegunungan yang memukau. Jalur trekking yang tidak terlalu berat menjadikannya cocok untuk semua kalangan. Spot terbaik untuk foto sunrise dan sunset.',
- '08:00 - 17:00', 10000, -7.93450000, 112.39650000,
+ 'Setiap hari 08.00-17.00', 10000, 10000, 10000, -7.86174200, 112.45993100,
  'Pagi hari untuk sunrise atau sore hari untuk sunset',
  TRUE, 'Motor, Mobil', FALSE, 4.5,
- 'Tulungrejo, Pujon Kidul, Malang',
- 'Parkir Motor: Rp 5.000 | Parkir Mobil: Rp 10.000'),
+ 'Tulungrejo, Pujon Kidul, Kec. Pujon, Kabupaten Malang, Jawa Timur 65391',
+ 'Motor: Rp 5.000 | Mobil: Rp 10.000'),
 
--- 4. Bobocabin Coban Rondo
+-- 4. Bobocabin Coban Rondo — weekday 35000, weekend 40000
 ('Bobocabin Coban Rondo',
  'Glamping premium di tengah hutan pinus dengan fasilitas modern dan pemandangan alam yang menakjubkan.',
- 'Bobocabin Coban Rondo menghadirkan pengalaman glamping (glamorous camping) premium di tengah hutan pinus kawasan Coban Rondo. Setiap kabin dilengkapi fasilitas modern seperti AC, kamar mandi dalam, dan tempat tidur nyaman, sambil tetap merasakan nuansa alam yang autentik. Tersedia berbagai aktivitas outdoor di sekitar kawasan.',
- '24 jam (check-in 14:00, check-out 12:00)', 35000, -7.87650000, 112.52050000,
+ 'Bobocabin Coban Rondo menghadirkan pengalaman glamping premium di tengah hutan pinus kawasan Coban Rondo. Setiap kabin dilengkapi fasilitas modern seperti AC, kamar mandi dalam, dan tempat tidur nyaman. Harga tiket: Weekday Rp 35.000, Weekend Rp 40.000.',
+ '24 Jam (check-in 14.00, check-out 12.00)', 35000, 35000, 40000, -7.87044600, 112.48673600,
  'Sepanjang tahun, terutama musim kemarau (April-Oktober)',
  TRUE, 'Motor, Mobil', TRUE, 4.9,
- 'Jl. Coban Rondo, Pandesari, Pujon, Malang',
- 'Parkir Motor: Rp 5.000 | Parkir Mobil: Rp 10.000 | Tiket Weekday: Rp 35.000 | Tiket Weekend: Rp 40.000'),
+ 'Jl. Coban Rondo, Jurangrejo, Pandesari, Kec. Pujon, Kabupaten Malang, Jawa Timur 65391',
+ 'Motor: Rp 5.000 | Mobil: Rp 10.000'),
 
--- 5. Kelinci Park
+-- 5. Kelinci Park — harga tunggal (dewasa 20000 sebagai base)
 ('Kelinci Park',
  'Taman wisata keluarga dengan ratusan kelinci lucu yang bisa diajak berinteraksi langsung.',
- 'Kelinci Park Pujon adalah destinasi wisata keluarga yang menyenangkan dengan ratusan kelinci berbagai ras yang bisa diajak berinteraksi langsung. Pengunjung dapat memberi makan, menggendong, dan berfoto bersama kelinci-kelinci lucu. Cocok untuk anak-anak dan keluarga yang ingin pengalaman wisata edukatif yang menyenangkan.',
- '08:00 - 17:00', 20000, -7.87890000, 112.51760000,
+ 'Kelinci Park Pujon adalah destinasi wisata keluarga yang menyenangkan dengan ratusan kelinci berbagai ras. Harga tiket: Dewasa Rp 20.000, Anak-anak Rp 10.000.',
+ 'Setiap hari 08.00-17.00', 20000, 20000, 20000, -7.85162100, 112.49344200,
  'Pagi hingga siang hari, cocok untuk anak-anak',
- TRUE, 'Motor', FALSE, 4.4,
- 'Jurangrejo, Pandesari, Pujon, Malang',
- 'Parkir Motor: Rp 5.000 | Tiket Dewasa: Rp 20.000 | Tiket Anak: Rp 10.000'),
+ TRUE, 'Motor, Mobil', FALSE, 4.4,
+ 'Samaan Klojen, Jurangrejo, Pandesari, Kec. Pujon, Kabupaten Malang, Jawa Timur 65112',
+ 'Motor: Rp 5.000 | Mobil: Rp 10.000'),
 
--- 6. Florawisata Santerra De Laponte
+-- 6. Florawisata Santerra De Laponte — reguler weekday 30000, weekend 35000
 ('Florawisata Santerra De Laponte',
  'Taman bunga Eropa di Malang dengan ribuan bunga berwarna-warni dan spot foto instagramable.',
- 'Florawisata Santerra De Laponte adalah taman bunga bergaya Eropa yang memukau di kawasan Pujon. Ribuan bunga berwarna-warni dari berbagai penjuru dunia ditata dengan indah menciptakan pemandangan yang memesona. Tersedia berbagai spot foto instagramable, area piknik, dan wahana keluarga. Destinasi wajib kunjung bagi pecinta bunga dan fotografi.',
- '08:00 - 17:00', 30000, -7.87340000, 112.52340000,
- 'Pagi hari (08:00-11:00) saat bunga mekar sempurna',
+ 'Florawisata Santerra De Laponte adalah taman bunga bergaya Eropa yang memukau di kawasan Pujon. Harga tiket: Reguler Weekday Rp 30.000, Reguler Weekend Rp 35.000, Terusan Weekday Rp 70.000, Terusan Weekend Rp 85.000.',
+ 'Setiap hari 08.00-17.00', 30000, 30000, 35000, -7.85443100, 112.48549900,
+ 'Pagi hari (08.00-11.00) saat bunga mekar sempurna',
  TRUE, 'Motor, Mobil, Bus', TRUE, 4.8,
- 'Jl. Truno Joyo, Pandesari, Pujon, Malang',
- 'Parkir Motor: Rp 5.000 | Parkir Mobil: Rp 10.000 | Parkir Bus: Rp 15.000 | Tiket Reguler Weekday: Rp 30.000 | Tiket Reguler Weekend: Rp 35.000 | Tiket Terusan Weekday: Rp 70.000 | Tiket Terusan Weekend: Rp 85.000');
+ 'Jl. Truno Joyo, Jurangrejo, Pandesari, Kec. Pujon, Kabupaten Malang, Jawa Timur 65391',
+ 'Motor: Rp 5.000 | Mobil: Rp 10.000 | Bus: Rp 15.000');
 
 -- ============================================================
 -- Seed: Detail destinasi (visitor_data 12 bulan + image_url)

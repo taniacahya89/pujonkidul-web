@@ -22,22 +22,8 @@ function DestinationCard({ destination }) {
   return (
     <>
       <div
-        className="rounded-xl overflow-hidden cursor-pointer group"
-        style={{
-          backgroundColor: '#fff',
-          border: '1px solid var(--surface-2)',
-          boxShadow: '0 1px 3px rgba(44,46,15,0.06)',
-          transition: 'box-shadow 0.2s, transform 0.2s',
-        }}
+        className="card-base rounded-xl overflow-hidden cursor-pointer group"
         onClick={() => setModalOpen(true)}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = '0 8px 24px rgba(44,46,15,0.12)'
-          e.currentTarget.style.transform = 'translateY(-3px)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = '0 1px 3px rgba(44,46,15,0.06)'
-          e.currentTarget.style.transform = 'translateY(0)'
-        }}
       >
         {/* Gambar dominan — 16:9 */}
         <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
@@ -79,13 +65,10 @@ function DestinationCard({ destination }) {
             </span>
           </div>
 
-          {/* CTA */}
+      {/* CTA */}
           <button
-            className="w-full py-2 rounded-lg text-xs font-semibold transition-colors duration-150"
-            style={{ backgroundColor: 'var(--surface)', color: 'var(--text-1)', border: '1px solid var(--surface-2)' }}
+            className="w-full py-2 rounded-lg text-xs font-semibold transition-all duration-150 btn-secondary"
             onClick={(e) => { e.stopPropagation(); setModalOpen(true) }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--surface-2)' }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--surface)' }}
           >
             Lihat Detail
           </button>

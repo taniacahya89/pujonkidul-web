@@ -66,14 +66,8 @@ func (s *weatherService) GetWeather() (*model.WeatherData, error) {
 
 	// Periksa status response OWM
 	if resp.StatusCode != http.StatusOK {
-		// Baca body error untuk debugging
 		bodyBytes, _ := io.ReadAll(resp.Body)
 		log.Printf("[WEATHER] OWM error body: %s", string(bodyBytes))
-		// Jika 401 (API key belum aktif), kembalikan data mock sementara
-		if resp.StatusCode == http.StatusUnauthorized {
-			log.Printf("[WEATHER] API key belum aktif, menggunakan data mock sementara")
-			return getMockWeather(), nil
-		}
 		return nil, fmt.Errorf("OWM API mengembalikan status %d", resp.StatusCode)
 	}
 
@@ -100,19 +94,4 @@ func (s *weatherService) GetWeather() (*model.WeatherData, error) {
 	}
 
 	return weatherData, nil
-}
-
-// getMockWeather mengembalikan data cuaca mock untuk kawasan Pujon Kidul
-// Digunakan sementara saat API key OWM belum aktif (butuh 2-24 jam setelah registrasi)
-// Hapus fungsi ini setelah API key aktif dan OWM berfungsi normal
-func getMockWeather() *model.WeatherData {
-	return &model.WeatherData{
-		Temp:        18.5,
-		FeelsLike:   17.0,
-		Condition:   "Clouds",
-		Description: "berawan sebagian",
-		Icon:        "02d",
-		Humidity:    82,
-		WindSpeed:   2.1,
-	}
 }

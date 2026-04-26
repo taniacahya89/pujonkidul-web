@@ -99,13 +99,13 @@ function Chatbot() {
       {/* Panel chatbot */}
       {open && (
         <div
-          className="fixed bottom-20 right-4 z-50 flex flex-col rounded-xl overflow-hidden"
+          className="fixed bottom-24 right-4 z-50 flex flex-col rounded-2xl overflow-hidden"
           style={{
-            width: '296px',
-            maxHeight: '440px',
+            width: '340px',
+            maxHeight: '500px',
             backgroundColor: 'var(--bg)',
             border: '1px solid var(--surface-2)',
-            boxShadow: '0 8px 32px rgba(20,22,8,0.16)',
+            boxShadow: '0 12px 40px rgba(20,22,8,0.2)',
           }}
         >
           {/* Header — solid, tidak ada efek */}
@@ -209,25 +209,35 @@ function Chatbot() {
         </div>
       )}
 
-      {/* Floating button — flat, tidak ada efek berlebihan */}
+      {/* Floating button — lebih besar, lebih discoverable */}
       <button
         id="chatbot-btn"
         onClick={() => setOpen((p) => !p)}
-        className="fixed bottom-4 right-4 z-50 rounded-full flex items-center justify-center font-semibold text-xs transition-all duration-150"
+        className="fixed bottom-5 right-5 z-50 rounded-full flex items-center gap-2 font-semibold transition-all duration-200"
         style={{
-          width: '48px',
-          height: '48px',
+          height: '52px',
+          padding: '0 20px',
           backgroundColor: 'var(--accent)',
           color: '#F8F3E1',
           border: 'none',
           cursor: 'pointer',
-          boxShadow: '0 4px 14px rgba(74,103,65,0.3)',
+          boxShadow: '0 4px 18px rgba(74,103,65,0.4)',
+          fontSize: '14px',
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--accent-hover)' }}
-        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--accent)' }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = 'var(--accent-hover)'
+          e.currentTarget.style.transform = 'translateY(-2px)'
+          e.currentTarget.style.boxShadow = '0 6px 22px rgba(74,103,65,0.5)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = 'var(--accent)'
+          e.currentTarget.style.transform = 'translateY(0)'
+          e.currentTarget.style.boxShadow = '0 4px 18px rgba(74,103,65,0.4)'
+        }}
         aria-label="Buka asisten wisata"
       >
-        {open ? '✕' : 'Chat'}
+        <span style={{ fontSize: '18px' }}>{open ? '✕' : '💬'}</span>
+        {!open && <span>Tanya Kami</span>}
       </button>
     </>
   )

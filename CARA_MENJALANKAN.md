@@ -45,6 +45,11 @@ Ganti `PASSWORD_KAMU` dengan password PostgreSQL yang tadi dicatat:
 "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -d pujon_kidul_explore -f backend/migrations/001_init.sql
 ```
 
+> **Jika database sudah ada (upgrade dari versi lama)**, jalankan migration tambahan:
+> ```
+> "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -d pujon_kidul_explore -f backend/migrations/002_add_ticket_weekday_weekend.sql
+> ```
+
 ### Buat file konfigurasi backend
 Buat file baru bernama `.env` di dalam folder `backend`, isinya:
 ```

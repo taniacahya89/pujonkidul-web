@@ -64,7 +64,7 @@ function Footer() {
           className="mt-10 pt-6 text-xs"
           style={{ borderTop: '1px solid var(--surface-2)', color: 'var(--text-3)' }}
         >
-          2024 Pujon Kidul Explore
+          2026 Pujon Kidul Explore
         </div>
       </div>
     </footer>

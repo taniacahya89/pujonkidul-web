@@ -9,61 +9,63 @@ import {
 import { formatRupiahShort } from '../../utils/formatCurrency'
 import useDestinationStore from '../../store/destinationStore'
 
-// Hitung harga tiket destinasi berdasarkan day_type
-// Menggunakan struktur data yang sama dengan backend (ticket_weekday/ticket_weekend)
+// Hitung harga tiket berdasarkan day_type — konsisten dengan backend
 function resolveTicketPrice(dest, dayType) {
   if (dayType === 'weekday' && dest.ticket_weekday > 0) return dest.ticket_weekday
   if (dayType === 'weekend' && dest.ticket_weekend > 0) return dest.ticket_weekend
-  return dest.ticket_price // fallback harga tunggal
+  return dest.ticket_price
 }
 
-// Komponen form kalkulator budget — context-aware terhadap hari kunjungan
+// Style helper — input/select border berdasarkan error state
+function inputBorder(hasError) {
+  return `1px solid ${hasError ? '#C03030' : 'var(--surface-2)'}`
+}
+
 function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceChange, onSubmit }) {
   const { destinations } = useDestinationStore()
 
   const [formData, setFormData] = useState({
-    provinceId: '',
-    cityId: '',
-    vehicleType: 'motor',
-    personCount: 2,
+    provinceId:     '',
+    cityId:         '',
+    vehicleType:    'motor',
+    personCount:    2,
     destinationIds: [],
-    dayType: '',        // wajib dipilih — mempengaruhi harga tiket
-    mealBudget: 50000,
+    dayType:        '',
+    mealBudget:     50000,
     souvenirBudget: 150000,
-    estimatedDays: 1,
+    estimatedDays:  1,
   })
 
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors]   = useState({})
   const [touched, setTouched] = useState({})
 
-  // Validasi real-time
   useEffect(() => {
     if (Object.keys(touched).length > 0) {
-      const { errors: newErrors } = validateBudgetForm(formData)
-      setErrors(newErrors)
+      const { errors: e } = validateBudgetForm(formData)
+      setErrors(e)
     }
   }, [formData])
 
   const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    setTouched((prev) => ({ ...prev, [field]: true }))
+    setFormData((p) => ({ ...p, [field]: value }))
+    setTouched((p) => ({ ...p, [field]: true }))
   }
 
-  const handleProvinceChange = (provinceId) => {
-    handleChange('provinceId', provinceId)
+  const handleProvinceChange = (id) => {
+    handleChange('provinceId', id)
     handleChange('cityId', '')
-    onProvinceChange(provinceId)
+    onProvinceChange(id)
   }
 
   const handleDestinationToggle = (destId) => {
     const numId = Number(destId)
-    setFormData((prev) => {
-      const ids = prev.destinationIds.includes(numId)
-        ? prev.destinationIds.filter((id) => id !== numId)
-        : [...prev.destinationIds, numId]
-      return { ...prev, destinationIds: ids }
+    setFormData((p) => {
+      const ids = p.destinationIds.includes(numId)
+        ? p.destinationIds.filter((id) => id !== numId)
+        : [...p.destinationIds, numId]
+      return { ...p, destinationIds: ids }
     })
-    setTouched((prev) => ({ ...prev, destinations: true }))
+    setTouched((p) => ({ ...p, destinations: true }))
   }
 
   const handleSubmit = (e) => {
@@ -73,10 +75,9 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
       personCount: true, vehicleType: true, dayType: true,
       mealBudget: true, souvenirBudget: true,
     })
-    const { isValid, errors: validationErrors } = validateBudgetForm(formData)
-    setErrors(validationErrors)
+    const { isValid, errors: ve } = validateBudgetForm(formData)
+    setErrors(ve)
     if (!isValid) return
-
     onSubmit({
       province_id:     Number(formData.provinceId),
       city_id:         Number(formData.cityId),
@@ -92,30 +93,36 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
 
   const { isValid } = validateBudgetForm(formData)
 
-  // Label hari untuk ditampilkan di UI
   const dayLabel = formData.dayType === 'weekday'
     ? 'Harga Weekday'
     : formData.dayType === 'weekend'
     ? 'Harga Weekend'
-    : 'Harga Tiket'
+    : null
+
+  // Style untuk tombol toggle (kendaraan, hari, destinasi)
+  const toggleStyle = (active) => ({
+    backgroundColor: active ? 'var(--accent)' : '#fff',
+    color:           active ? 'var(--bg)'     : 'var(--text-1)',
+    border:          active ? '1.5px solid var(--accent)' : '1.5px solid var(--surface-2)',
+    boxShadow:       active ? '0 2px 8px rgba(61,107,53,0.22)' : 'none',
+    transform:       active ? 'translateY(-1px)' : 'none',
+    transition:      'all 0.15s ease',
+  })
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
 
-      {/* Provinsi dan Kota */}
+      {/* Provinsi & Kota */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: '#41431B' }}>
-            Provinsi Asal <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-1)' }}>
+            Provinsi Asal <span style={{ color: '#C03030' }}>*</span>
           </label>
           <select
             value={formData.provinceId}
             onChange={(e) => handleProvinceChange(e.target.value)}
             className="w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none"
-            style={{
-              border: `1px solid ${errors.province && touched.province ? '#ef4444' : '#AEB784'}`,
-              color: '#41431B',
-            }}
+            style={{ border: inputBorder(errors.province && touched.province), color: 'var(--text-1)', backgroundColor: '#fff' }}
           >
             <option value="">-- Pilih Provinsi --</option>
             {provinces.map((p) => (
@@ -123,23 +130,20 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
             ))}
           </select>
           {errors.province && touched.province && (
-            <p className="text-red-500 text-xs mt-1">{errors.province}</p>
+            <p className="text-xs mt-1" style={{ color: '#C03030' }}>{errors.province}</p>
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: '#41431B' }}>
-            Kota Asal <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-1)' }}>
+            Kota Asal <span style={{ color: '#C03030' }}>*</span>
           </label>
           <select
             value={formData.cityId}
             onChange={(e) => handleChange('cityId', e.target.value)}
             disabled={!formData.provinceId || isLoading}
             className="w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none disabled:opacity-50"
-            style={{
-              border: `1px solid ${errors.city && touched.city ? '#ef4444' : '#AEB784'}`,
-              color: '#41431B',
-            }}
+            style={{ border: inputBorder(errors.city && touched.city), color: 'var(--text-1)', backgroundColor: '#fff' }}
           >
             <option value="">-- Pilih Kota --</option>
             {cities.map((c) => (
@@ -147,29 +151,25 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
             ))}
           </select>
           {errors.city && touched.city && (
-            <p className="text-red-500 text-xs mt-1">{errors.city}</p>
+            <p className="text-xs mt-1" style={{ color: '#C03030' }}>{errors.city}</p>
           )}
         </div>
       </div>
 
-      {/* Kendaraan dan Jumlah Orang */}
+      {/* Kendaraan & Jumlah Orang */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: '#41431B' }}>
-            Jenis Kendaraan <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-1)' }}>
+            Jenis Kendaraan <span style={{ color: '#C03030' }}>*</span>
           </label>
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             {VEHICLE_OPTIONS.map((v) => (
               <button
                 key={v.value}
                 type="button"
                 onClick={() => handleChange('vehicleType', v.value)}
-                className="flex-1 py-2.5 px-3 rounded-xl border text-sm font-medium transition-colors"
-                style={{
-                  backgroundColor: formData.vehicleType === v.value ? '#237227' : '#fff',
-                  color: formData.vehicleType === v.value ? '#F8F3E1' : '#41431B',
-                  borderColor: formData.vehicleType === v.value ? '#237227' : '#AEB784',
-                }}
+                className="flex-1 py-2.5 px-3 rounded-xl text-sm font-medium"
+                style={toggleStyle(formData.vehicleType === v.value)}
               >
                 {v.label}
                 <span className="block text-xs opacity-70">{v.description}</span>
@@ -179,8 +179,8 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: '#41431B' }}>
-            Jumlah Orang (1–10) <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-1)' }}>
+            Jumlah Orang (1–10) <span style={{ color: '#C03030' }}>*</span>
           </label>
           <input
             type="number"
@@ -189,57 +189,50 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
             value={formData.personCount}
             onChange={(e) => handleChange('personCount', e.target.value)}
             className="w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none"
-            style={{
-              border: `1px solid ${errors.personCount && touched.personCount ? '#ef4444' : '#AEB784'}`,
-              color: '#41431B',
-            }}
+            style={{ border: inputBorder(errors.personCount && touched.personCount), color: 'var(--text-1)', backgroundColor: '#fff' }}
           />
           {errors.personCount && touched.personCount && (
-            <p className="text-red-500 text-xs mt-1">{errors.personCount}</p>
+            <p className="text-xs mt-1" style={{ color: '#C03030' }}>{errors.personCount}</p>
           )}
         </div>
       </div>
 
-      {/* ===== HARI KUNJUNGAN — mempengaruhi harga tiket ===== */}
+      {/* Hari Kunjungan */}
       <div>
-        <label className="block text-sm font-medium mb-2" style={{ color: '#41431B' }}>
-          Hari Kunjungan <span className="text-red-500">*</span>
-          <span className="ml-2 text-xs font-normal" style={{ color: '#4C5C2D' }}>
+        <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-1)' }}>
+          Hari Kunjungan <span style={{ color: '#C03030' }}>*</span>
+          <span className="ml-2 text-xs font-normal" style={{ color: 'var(--text-3)' }}>
             (mempengaruhi harga tiket beberapa destinasi)
           </span>
         </label>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           {DAY_TYPE_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               type="button"
               onClick={() => handleChange('dayType', opt.value)}
-              className="flex-1 py-3 px-4 rounded-xl border text-sm font-medium transition-colors text-left"
-              style={{
-                backgroundColor: formData.dayType === opt.value ? '#4C5C2D' : '#fff',
-                color: formData.dayType === opt.value ? '#F8F3E1' : '#41431B',
-                borderColor: formData.dayType === opt.value ? '#4C5C2D' : '#AEB784',
-              }}
+              className="flex-1 py-3 px-4 rounded-xl text-sm font-medium text-left"
+              style={toggleStyle(formData.dayType === opt.value)}
             >
               <span className="block font-semibold">{opt.label}</span>
               <span className="block text-xs opacity-80">{opt.description}</span>
-              <span className="block text-xs mt-0.5 opacity-70">{opt.note}</span>
+              <span className="block text-xs mt-0.5 opacity-60">{opt.note}</span>
             </button>
           ))}
         </div>
         {errors.dayType && touched.dayType && (
-          <p className="text-red-500 text-xs mt-1">{errors.dayType}</p>
+          <p className="text-xs mt-1" style={{ color: '#C03030' }}>{errors.dayType}</p>
         )}
       </div>
 
-      {/* Destinasi — harga ditampilkan sesuai day_type yang dipilih */}
+      {/* Destinasi */}
       <div>
-        <label className="block text-sm font-medium mb-1" style={{ color: '#41431B' }}>
-          Destinasi yang Dikunjungi <span className="text-red-500">*</span>
-          {formData.dayType && (
+        <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-1)' }}>
+          Destinasi yang Dikunjungi <span style={{ color: '#C03030' }}>*</span>
+          {dayLabel && (
             <span
               className="ml-2 text-xs font-normal px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: '#E3DBBB', color: '#4C5C2D' }}
+              style={{ backgroundColor: 'var(--accent-light)', color: 'var(--accent)' }}
             >
               {dayLabel}
             </span>
@@ -249,31 +242,27 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
           {destinations.map((dest) => {
             const price = resolveTicketPrice(dest, formData.dayType)
             const isSelected = formData.destinationIds.includes(dest.id)
-            // Tandai destinasi yang memiliki harga berbeda weekday/weekend
-            const hasDiffPrice = dest.ticket_weekday !== dest.ticket_weekend &&
-              dest.ticket_weekday > 0 && dest.ticket_weekend > 0
+            const hasDiffPrice =
+              dest.ticket_weekday > 0 &&
+              dest.ticket_weekend > 0 &&
+              dest.ticket_weekday !== dest.ticket_weekend
 
             return (
               <button
                 key={dest.id}
                 type="button"
                 onClick={() => handleDestinationToggle(dest.id)}
-                className="text-left px-3 py-2 rounded-xl border text-xs transition-colors"
-                style={{
-                  backgroundColor: isSelected ? '#237227' : '#fff',
-                  color: isSelected ? '#F8F3E1' : '#41431B',
-                  borderColor: isSelected ? '#237227' : '#AEB784',
-                }}
+                className="text-left px-3 py-2 rounded-xl text-xs"
+                style={toggleStyle(isSelected)}
               >
                 <span className="block font-medium truncate">{dest.name}</span>
                 <span className="opacity-80">
                   {formData.dayType ? formatRupiahShort(price) : formatRupiahShort(dest.ticket_price)}
                 </span>
-                {/* Indikator harga berbeda weekday/weekend */}
                 {hasDiffPrice && (
                   <span
-                    className="block text-xs mt-0.5"
-                    style={{ color: isSelected ? '#AEB877' : '#4C5C2D', opacity: 0.8 }}
+                    className="block text-xs mt-0.5 opacity-70"
+                    style={{ color: isSelected ? 'var(--bg)' : 'var(--text-3)' }}
                   >
                     ⚡ harga bervariasi
                   </span>
@@ -283,14 +272,14 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
           })}
         </div>
         {errors.destinations && touched.destinations && (
-          <p className="text-red-500 text-xs mt-1">{errors.destinations}</p>
+          <p className="text-xs mt-1" style={{ color: '#C03030' }}>{errors.destinations}</p>
         )}
       </div>
 
-      {/* Anggaran Makan dan Oleh-oleh */}
+      {/* Anggaran Makan & Oleh-oleh */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: '#41431B' }}>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-1)' }}>
             Anggaran Makan / Orang / Kali
           </label>
           <div className="space-y-2">
@@ -302,15 +291,16 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
                   value={opt.value}
                   checked={Number(formData.mealBudget) === opt.value}
                   onChange={() => handleChange('mealBudget', opt.value)}
+                  style={{ accentColor: 'var(--accent)' }}
                 />
-                <span className="text-sm" style={{ color: '#41431B' }}>{opt.label}</span>
+                <span className="text-sm" style={{ color: 'var(--text-2)' }}>{opt.label}</span>
               </label>
             ))}
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: '#41431B' }}>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-1)' }}>
             Anggaran Oleh-oleh / Orang
           </label>
           <div className="space-y-2">
@@ -322,8 +312,9 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
                   value={opt.value}
                   checked={Number(formData.souvenirBudget) === opt.value}
                   onChange={() => handleChange('souvenirBudget', opt.value)}
+                  style={{ accentColor: 'var(--accent)' }}
                 />
-                <span className="text-sm" style={{ color: '#41431B' }}>{opt.label}</span>
+                <span className="text-sm" style={{ color: 'var(--text-2)' }}>{opt.label}</span>
               </label>
             ))}
           </div>
@@ -332,7 +323,7 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
 
       {/* Estimasi hari */}
       <div>
-        <label className="block text-sm font-medium mb-1" style={{ color: '#41431B' }}>
+        <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-1)' }}>
           Estimasi Lama Perjalanan (hari)
         </label>
         <input
@@ -342,19 +333,20 @@ function BudgetForm({ provinces, cities, isLoading, isCalculating, onProvinceCha
           value={formData.estimatedDays}
           onChange={(e) => handleChange('estimatedDays', e.target.value)}
           className="w-32 rounded-xl px-3 py-2.5 text-sm focus:outline-none"
-          style={{ border: '1px solid #AEB784', color: '#41431B' }}
+          style={{ border: '1px solid var(--surface-2)', color: 'var(--text-1)', backgroundColor: '#fff' }}
         />
       </div>
 
-      {/* Tombol submit */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={!isValid || isCalculating}
-        className="w-full py-4 rounded-xl font-bold text-lg transition-all"
+        className="btn-primary w-full"
         style={{
-          backgroundColor: isValid && !isCalculating ? '#237227' : '#AEB784',
-          color: '#F8F3E1',
-          cursor: isValid && !isCalculating ? 'pointer' : 'not-allowed',
+          fontSize: '0.9375rem',
+          padding: '13px 24px',
+          opacity: (!isValid || isCalculating) ? 0.5 : 1,
+          cursor: (!isValid || isCalculating) ? 'not-allowed' : 'pointer',
         }}
       >
         {isCalculating ? '⏳ Menghitung...' : '💰 Hitung Budget'}

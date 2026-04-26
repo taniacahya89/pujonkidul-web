@@ -1,66 +1,128 @@
 import { TRAFFIC_ROUTES } from '../utils/constants'
 
 // ============================================================
-// Abstraction layer untuk data kondisi lalu lintas
-// Plug-in Google Maps Directions API di sini saat API key tersedia
+// Status kondisi lalu lintas
 // ============================================================
-
-// Status kondisi yang mungkin
 export const TRAFFIC_STATUS = {
   LANCAR: 'lancar',
   PADAT:  'padat',
   MACET:  'macet',
 }
 
-// Label dan warna untuk setiap status
+// Urutan status (untuk transisi gradual)
+const STATUS_ORDER = ['lancar', 'padat', 'macet']
+
+// Konfigurasi tampilan per status
 export const STATUS_CONFIG = {
-  lancar: { label: 'Lancar',  color: '#237227', bg: '#E3DBBB', dot: '#237227' },
-  padat:  { label: 'Padat',   color: '#b45309', bg: '#fef3c7', dot: '#d97706' },
-  macet:  { label: 'Macet',   color: '#dc2626', bg: '#fee2e2', dot: '#ef4444' },
+  lancar: {
+    label: 'Lancar',
+    color: '#1E5C1E',
+    bg:    '#E6F4E6',
+    dot:   '#2D6A2D',
+    border:'#B8DDB8',
+  },
+  padat: {
+    label: 'Hati-hati',
+    color: '#7A4E08',
+    bg:    '#FDF3E0',
+    dot:   '#C47D10',
+    border:'#E8C97A',
+  },
+  macet: {
+    label: 'Macet',
+    color: '#7A1A1A',
+    bg:    '#FDEAEA',
+    dot:   '#C03030',
+    border:'#E8AAAA',
+  },
 }
 
 // ============================================================
-// Implementasi mock — ganti dengan Google Maps API saat siap
-// Untuk menggunakan Google Maps Directions API:
-//   1. Tambahkan VITE_GOOGLE_MAPS_API_KEY ke frontend/.env
-//   2. Ganti fungsi fetchTrafficStatus di bawah dengan implementasi nyata
-//   3. Endpoint: https://maps.googleapis.com/maps/api/directions/json
-//      ?origin=...&destination=...&departure_time=now&traffic_model=best_guess
-//      &key=VITE_GOOGLE_MAPS_API_KEY
+// Status awal berdasarkan jam dan hari — deterministik
+// Tidak random, mengikuti pola lalu lintas nyata
 // ============================================================
-
-// Simulasi variasi status berdasarkan jam (mock realistis)
-function getMockStatus(routeId) {
-  const hour = new Date().getHours()
-  // Jam sibuk: 07-09 dan 15-18
-  const isPeakHour = (hour >= 7 && hour <= 9) || (hour >= 15 && hour <= 18)
+function getBaseStatus(routeId) {
+  const hour    = new Date().getHours()
   const isWeekend = [0, 6].includes(new Date().getDay())
+  // Jam sibuk pagi: 07–09, sore: 15–18
+  const isPeakMorning = hour >= 7  && hour <= 9
+  const isPeakEvening = hour >= 15 && hour <= 18
+  const isPeak = isPeakMorning || isPeakEvening
 
-  const mockMap = {
-    'batu-pujon':   isPeakHour ? TRAFFIC_STATUS.PADAT  : TRAFFIC_STATUS.LANCAR,
-    'songgoriti':   isPeakHour ? TRAFFIC_STATUS.MACET   : TRAFFIC_STATUS.PADAT,
-    'malang-kota':  isPeakHour ? TRAFFIC_STATUS.MACET   : TRAFFIC_STATUS.PADAT,
-    'kediri-pujon': isWeekend  ? TRAFFIC_STATUS.PADAT   : TRAFFIC_STATUS.LANCAR,
+  // Setiap rute punya karakteristik berbeda
+  const baseMap = {
+    'batu-pujon':   isPeak ? 'padat'  : 'lancar',
+    'songgoriti':   isPeak ? 'macet'  : 'padat',
+    'malang-kota':  isPeak ? 'macet'  : 'padat',
+    'kediri-pujon': isWeekend && isPeak ? 'padat' : 'lancar',
   }
-  return mockMap[routeId] || TRAFFIC_STATUS.LANCAR
+  return baseMap[routeId] || 'lancar'
 }
 
-// Ambil status lalu lintas untuk semua rute
-// Mengembalikan array { ...route, status, lastUpdated }
+// ============================================================
+// State internal — menyimpan status terakhir setiap rute
+// Digunakan untuk transisi gradual saat refresh
+// ============================================================
+let _currentStatuses = {}
+
+// Transisi gradual: 70% tetap, 30% bergeser ke status tetangga
+// Tidak pernah loncat dari Lancar langsung ke Macet
+function evolveStatus(routeId, currentStatus) {
+  const roll = Math.random()
+  if (roll < 0.70) {
+    // Tetap sama
+    return currentStatus
+  }
+  // Bergeser ke status tetangga (naik atau turun 1 level)
+  const idx = STATUS_ORDER.indexOf(currentStatus)
+  if (idx === -1) return currentStatus
+
+  // Tentukan arah bergeser berdasarkan jam
+  const hour = new Date().getHours()
+  const isPeak = (hour >= 7 && hour <= 9) || (hour >= 15 && hour <= 18)
+
+  if (isPeak) {
+    // Jam sibuk: cenderung naik (lebih padat)
+    const nextIdx = Math.min(idx + 1, STATUS_ORDER.length - 1)
+    return STATUS_ORDER[nextIdx]
+  } else {
+    // Di luar jam sibuk: cenderung turun (lebih lancar)
+    const nextIdx = Math.max(idx - 1, 0)
+    return STATUS_ORDER[nextIdx]
+  }
+}
+
+// ============================================================
+// Fungsi utama — ambil status semua rute
+// Pertama kali: gunakan base status (deterministik)
+// Refresh berikutnya: evolusi gradual dari status sebelumnya
+// ============================================================
 export async function fetchAllTrafficStatus() {
-  // TODO: Ganti dengan Google Maps Directions API saat API key tersedia
-  // Contoh implementasi nyata:
-  // const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-  // if (apiKey) {
-  //   return await fetchFromGoogleMaps(apiKey)
-  // }
+  // Simulasi network latency realistis (300–700ms)
+  const delay = 300 + Math.random() * 400
+  await new Promise((r) => setTimeout(r, delay))
 
-  // Simulasi network delay
-  await new Promise((r) => setTimeout(r, 600))
+  const now = new Date().toISOString()
 
-  return TRAFFIC_ROUTES.map((route) => ({
-    ...route,
-    status: getMockStatus(route.id),
-    lastUpdated: new Date().toISOString(),
-  }))
+  return TRAFFIC_ROUTES.map((route) => {
+    const prev = _currentStatuses[route.id]
+    let newStatus
+
+    if (!prev) {
+      // Pertama kali load: gunakan base status
+      newStatus = getBaseStatus(route.id)
+    } else {
+      // Refresh: evolusi gradual dari status sebelumnya
+      newStatus = evolveStatus(route.id, prev)
+    }
+
+    // Simpan status terbaru
+    _currentStatuses[route.id] = newStatus
+
+    return {
+      ...route,
+      status:      newStatus,
+      lastUpdated: now,
+    }
+  })
 }

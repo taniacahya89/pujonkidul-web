@@ -5,7 +5,6 @@ import BudgetForm from '../features/budget/BudgetForm'
 import BudgetResult from '../features/budget/BudgetResult'
 import TravelTips from '../features/budget/TravelTips'
 
-// Halaman kalkulator budget perjalanan ke Pujon Kidul
 function BudgetPage() {
   const {
     provinces,
@@ -19,44 +18,65 @@ function BudgetPage() {
     resetResult,
   } = useBudget()
 
-  // Pastikan data destinasi tersedia untuk multi-select
-  const { destinations } = useDestinations()
+  useDestinations() // pastikan destinasi tersedia untuk multi-select
 
-  // Reset hasil saat halaman pertama kali dimuat
   useEffect(() => {
     resetResult()
   }, [])
 
-  // Handler submit form — kirim ke backend untuk kalkulasi
   const handleSubmit = async (formData) => {
     await calculateBudget(formData)
-    // Scroll ke hasil setelah kalkulasi
     setTimeout(() => {
       document.getElementById('budget-result')?.scrollIntoView({ behavior: 'smooth' })
     }, 300)
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
-      {/* Header halaman */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2" style={{ color: '#41431B' }}>
-          💰 Kalkulator Budget Perjalanan
+    <div className="max-w-7xl mx-auto px-6" style={{ paddingTop: '56px', paddingBottom: '80px' }}>
+      {/* Header */}
+      <div style={{ marginBottom: '40px' }}>
+        <p
+          className="text-xs font-semibold uppercase tracking-widest"
+          style={{ color: 'var(--text-3)', marginBottom: '8px' }}
+        >
+          Perencanaan Perjalanan
+        </p>
+        <h1 className="font-display text-3xl" style={{ color: 'var(--text-1)', marginBottom: '8px' }}>
+          Kalkulator Budget
         </h1>
-        <p style={{ color: '#4C5C2D' }}>
-          Hitung estimasi biaya perjalanan ke Pujon Kidul berdasarkan kota asal dan preferensi Anda
+        <p className="text-sm" style={{ color: 'var(--text-2)' }}>
+          Estimasi biaya perjalanan ke Pujon Kidul berdasarkan kota asal, kendaraan, dan hari kunjungan.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Kolom kiri: Form input */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h2 className="font-bold text-gray-800 text-lg mb-5">📝 Detail Perjalanan</h2>
+        {/* Form */}
+        <div
+          className="rounded-2xl p-6"
+          style={{
+            backgroundColor: '#fff',
+            border: '1px solid var(--surface-2)',
+            boxShadow: '0 1px 4px rgba(44,46,15,0.06)',
+          }}
+        >
+          <h2
+            className="font-semibold text-base"
+            style={{ color: 'var(--text-1)', marginBottom: '20px' }}
+          >
+            Detail Perjalanan
+          </h2>
 
-          {/* Error dari backend */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4">
-              <p className="text-red-600 text-sm">{error}</p>
+            <div
+              className="rounded-xl p-3 text-sm"
+              style={{
+                backgroundColor: '#FEF2F2',
+                border: '1px solid #FECACA',
+                color: '#DC2626',
+                marginBottom: '16px',
+              }}
+            >
+              {error}
             </div>
           )}
 
@@ -70,37 +90,44 @@ function BudgetPage() {
           />
         </div>
 
-        {/* Kolom kanan: Hasil kalkulasi */}
-        <div id="budget-result" className="space-y-6">
-          {/* Placeholder sebelum kalkulasi */}
+        {/* Hasil */}
+        <div id="budget-result" className="space-y-5">
           {!result && !isCalculating && (
-            <div className="bg-white rounded-2xl shadow-md p-8 text-center">
-              <div className="text-5xl mb-4">🧮</div>
-              <h3 className="font-semibold text-gray-700 mb-2">
+            <div
+              className="rounded-2xl p-10 text-center"
+              style={{
+                backgroundColor: '#fff',
+                border: '1px solid var(--surface-2)',
+                boxShadow: '0 1px 4px rgba(44,46,15,0.06)',
+              }}
+            >
+              <div style={{ fontSize: '40px', marginBottom: '16px' }}>🧮</div>
+              <p className="font-semibold text-sm" style={{ color: 'var(--text-1)', marginBottom: '6px' }}>
                 Isi form dan klik "Hitung Budget"
-              </h3>
-              <p className="text-gray-400 text-sm">
-                Hasil estimasi biaya perjalanan akan muncul di sini
+              </p>
+              <p className="text-xs" style={{ color: 'var(--text-3)' }}>
+                Hasil estimasi akan muncul di sini
               </p>
             </div>
           )}
 
-          {/* Loading kalkulasi */}
           {isCalculating && (
-            <div className="bg-white rounded-2xl shadow-md p-8 text-center">
-              <div className="text-4xl mb-3 animate-bounce">⏳</div>
-              <p className="text-gray-600">Menghitung estimasi budget...</p>
+            <div
+              className="rounded-2xl p-10 text-center"
+              style={{
+                backgroundColor: '#fff',
+                border: '1px solid var(--surface-2)',
+              }}
+            >
+              <div style={{ fontSize: '36px', marginBottom: '12px' }}>⏳</div>
+              <p className="text-sm" style={{ color: 'var(--text-2)' }}>Menghitung estimasi budget...</p>
             </div>
           )}
 
-          {/* Hasil kalkulasi */}
           {result && !isCalculating && (
             <>
               <BudgetResult result={result} />
-              <TravelTips
-                tips={result.tips}
-                bestVisitTime={result.best_visit_time}
-              />
+              <TravelTips tips={result.tips} bestVisitTime={result.best_visit_time} />
             </>
           )}
         </div>

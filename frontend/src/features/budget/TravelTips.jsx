@@ -1,34 +1,50 @@
-// Komponen tips hemat perjalanan dan rekomendasi waktu berkunjung
-// Props:
-//   - tips: array string tips dari backend
-//   - bestVisitTime: string rekomendasi waktu terbaik berkunjung
 function TravelTips({ tips, bestVisitTime }) {
   if (!tips || tips.length === 0) return null
 
   return (
-    <div className="space-y-4">
-      {/* Tips hemat perjalanan */}
-      <div className="bg-amber-50 border border-amber-100 rounded-2xl p-5">
-        <h4 className="font-bold text-amber-800 mb-3 flex items-center gap-2">
-          💡 Tips Hemat Perjalanan
-        </h4>
+    <div className="space-y-3">
+      {/* Tips hemat */}
+      <div
+        className="rounded-2xl p-5"
+        style={{
+          backgroundColor: '#fff',
+          border: '1px solid var(--surface-2)',
+          boxShadow: '0 1px 4px rgba(44,46,15,0.06)',
+        }}
+      >
+        <p
+          className="text-xs font-semibold uppercase tracking-wide mb-3"
+          style={{ color: 'var(--text-3)' }}
+        >
+          Tips Hemat Perjalanan
+        </p>
         <ul className="space-y-2">
-          {tips.map((tip, index) => (
-            <li key={index} className="flex items-start gap-2 text-sm text-amber-700">
-              <span className="text-amber-500 mt-0.5 flex-shrink-0">✓</span>
-              <span>{tip}</span>
+          {tips.map((tip, i) => (
+            <li key={i} className="flex items-start gap-2.5">
+              <span
+                className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-xs mt-0.5"
+                style={{ backgroundColor: 'var(--surface)', color: 'var(--accent)' }}
+              >
+                ✓
+              </span>
+              <span className="text-sm leading-relaxed" style={{ color: 'var(--text-2)' }}>
+                {tip}
+              </span>
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Rekomendasi waktu terbaik berkunjung */}
+      {/* Waktu terbaik */}
       {bestVisitTime && (
-        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
-          <h4 className="font-bold text-blue-800 mb-2 flex items-center gap-2">
-            ⏰ Rekomendasi Waktu Berkunjung
-          </h4>
-          <p className="text-blue-700 text-sm">{bestVisitTime}</p>
+        <div
+          className="rounded-2xl p-4"
+          style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--surface-2)' }}
+        >
+          <p className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: 'var(--text-3)' }}>
+            Waktu Terbaik Berkunjung
+          </p>
+          <p className="text-sm" style={{ color: 'var(--text-1)' }}>{bestVisitTime}</p>
         </div>
       )}
     </div>
